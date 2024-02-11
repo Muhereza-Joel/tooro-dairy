@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Form, Schema, Button } from "rsuite";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
 
 const emailRule = Schema.Types.StringType()
   .isEmail("Please enter a valid email address.")
@@ -10,23 +13,89 @@ const passwordRule = Schema.Types.StringType().isRequired(
 );
 
 const Login = () => {
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (formValue) => {
     setFormData(formValue);
-  }
+  };
 
   const handleSubmit = async () => {
-    if(!formData.email || !formData.password){
-      return
+    try {
+      if (!formData.email || !formData.password) {
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:3002/tdmis/api/v1/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Save user data to cookie upon successful login
+        Cookies.set(
+          "tdmis",
+          JSON.stringify({
+            username: data.username,
+            id: data.id,
+            role: data.role,
+            email: data.email,
+            password: data.password,
+          })
+        );
+
+        toast.success("Aunthentication Successfull...", {
+          style: { backgroundColor: "#cce6e8", color: "#333" },
+        });
+        navigate("/dashboard");
+      } else {
+        toast.error("Aunthentication failed, Please try again...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to connect to the server...", {
+        style: { backgroundColor: "#fcd0d0", color: "#333" },
+      });
     }
-    console.log(formData);
-    navigate("/dashboard");
-  }
+  };
+
+  // useEffect(() => {
+  //   const userCookie = Cookies.get("tdmis");
+
+  //   if (userCookie) {
+  //     try {
+  //       const userDataFromCookie = JSON.parse(userCookie);
+  //       setFormData(prevState => ({
+  //         ...prevState,
+  //         email: userDataFromCookie.email,
+  //         password: userDataFromCookie.password,
+  //       }));
+  //       // Check if the parsed data is an object
+  //       if (typeof userDataFromCookie === "object") {
+
+  //       } else {
+
+  //         console.error("Invalid user data format in the cookie");
+  //       }
+  //     } catch (error) {
+
+  //       console.error("Error parsing JSON from the cookie:", error);
+  //     }
+  //   }
+  // }, [])
+
   return (
     <div
       style={{
@@ -56,7 +125,7 @@ const Login = () => {
 
         <Form.Group controlId="email-6">
           <Form.ControlLabel style={{ textAlign: "start" }}>
-            Email or Username
+            Email Adress
           </Form.ControlLabel>
           <Form.Control
             value={formData.email}
@@ -100,9 +169,26 @@ const Login = () => {
         </Form.Group>
         <h6>
           Not Yet registered?{" "}
-          <a onClick={() =>{navigate("/auth/register")}}>Click here to register</a>
+          <a
+            onClick={() => {
+              navigate("/auth/register");
+            }}
+          >
+            Click here to register
+          </a>
         </h6>
       </Form>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Register from './Register';
 import Login from './components/Login';
+import Users from './components/Users';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
@@ -26,6 +27,7 @@ function App() {
             <Route path='/dashboard' element={<Dashboard theme={theme} onChangeTheme={toggleTheme} />} />
             <Route path='/' element={<Login />} />
             <Route path='/auth/register' element={<Register />} />
+            <Route path='/dashboard/users' element={<Users theme={theme} onChangeTheme={toggleTheme} />}/>
           </Routes>
         </Router>
       </Container>
