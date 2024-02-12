@@ -471,16 +471,19 @@ const Users = (props) => {
                       />
                     </div>
                   </Form.Group>
+                  <div style={{ textAlign: "end" }}>
+                    <Button type="submit" appearance="primary">
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => setEditModal(false)}
+                      appearance="subtle"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </Form>
               </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={() => setEditModal(false)} appearance="subtle">
-                  Cancel
-                </Button>
-                <Button type="submit" appearance="primary">
-                  Save
-                </Button>
-              </Modal.Footer>
             </Modal>
             <ToastContainer
               position="bottom-left"
