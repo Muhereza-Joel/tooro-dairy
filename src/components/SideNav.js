@@ -15,7 +15,7 @@ const SideNav = (props) => {
           style={{ height: "100vh", position: "sticky", top: 0, left: 0 }}
         >
           <Nav activeKey="1">
-            <Nav.Item eventKey="1" icon={<DashboardIcon />}>
+            <Nav.Item eventKey="1" icon={<DashboardIcon />} onClick={() => (navigate("/dashboard"))}>
               Dashboard
             </Nav.Item>
             <Nav.Menu eventKey={2} title="Users" icon={<GroupIcon />}>
