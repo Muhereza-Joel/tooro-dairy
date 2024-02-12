@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Form, Schema, Button } from "rsuite";
 
 const nameRule = Schema.Types.StringType().isRequired(
@@ -14,23 +16,71 @@ const passwordRule = Schema.Types.StringType().isRequired(
 
 const Register = () => {
   const navigate = useNavigate();
-  const[formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
-    password: ""
-  })
+    password: "",
+  });
 
   const handleChange = (formValue) => {
     setFormData(formValue);
-  }
+  };
 
   const handleSubmit = async () => {
-    if(!formData.username || !formData.email || !formData.password){
-      return
+    try {
+      if (!formData.username || !formData.email || !formData.password) {
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:3002/tdmis/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (!data.user || !data.user.errors) {
+          toast.success("Account created successfully...", {
+            style: { backgroundColor: "#cce6e8", color: "#333" },
+          });
+
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          const errors = data.user.errors;
+
+          // Iterate through the keys of errors object
+          Object.keys(errors).forEach((errorType) => {
+            const errorMessage = errors[errorType];
+
+            // Display a toast for each error
+            toast.error(`${errorMessage}`, {
+              style: { backgroundColor: "#fcd0d0", color: "#333" },
+            });
+          });
+        }
+      } else {
+        toast.error("Failed to create your account...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
+      }
+
+      console.log(formData);
+      // navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to connect to the server...", {
+        style: { backgroundColor: "#fcd0d0", color: "#333" },
+      });
     }
-    console.log(formData);
-    // navigate("/dashboard");
-  }
+  };
 
   return (
     <div
@@ -53,7 +103,6 @@ const Register = () => {
           padding: 20,
           borderRadius: 8,
         }}
-
         onChange={handleChange}
         onSubmit={handleSubmit}
         formValue={formData}
@@ -121,6 +170,17 @@ const Register = () => {
           </div>
         </Form.Group>
       </Form>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

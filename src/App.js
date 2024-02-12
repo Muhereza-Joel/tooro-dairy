@@ -3,7 +3,7 @@ import { CustomProvider, Container } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
-import Register from './Register';
+import Register from './components/Register';
 import Login from './components/Login';
 import Users from './components/Users';
 
