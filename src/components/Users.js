@@ -164,6 +164,7 @@ const Users = (props) => {
                   username: newData.username,
                   email: newData.email,
                   role: newData.role,
+                  updated_at: newData.updated_at,
                 }
               : user
           );
@@ -186,8 +187,11 @@ const Users = (props) => {
           });
         }
       } else {
-        toast.error("Error updating user. Please try again later.", {
-          style: { backgroundColor: "#ff6666", color: "#333" },
+        const error = newData.errors;
+
+        // Display a toast for each error
+        toast.error(`${error}`, {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
         });
       }
     } catch (error) {
@@ -325,7 +329,9 @@ const Users = (props) => {
                       Added On
                     </HeaderCell>
                     <Cell style={{ fontSize: "1.0rem" }}>
-                    {(rowData) => moment(rowData.created_at).format("MMMM D, YYYY")}
+                      {(rowData) =>
+                        moment(rowData.created_at).format("MMMM D, YYYY")
+                      }
                     </Cell>
                   </Column>
                   <Column width={200} flexGrow={1}>
@@ -335,7 +341,7 @@ const Users = (props) => {
                       Last Updated
                     </HeaderCell>
                     <Cell style={{ fontSize: "1.0rem" }} dataKey="updated_at">
-                    {(rowData) => moment(rowData.updated_at).fromNow()}
+                      {(rowData) => moment(rowData.updated_at).fromNow()}
                     </Cell>
                   </Column>
                   <Column width={150} fixed="right">
@@ -428,7 +434,6 @@ const Users = (props) => {
                   <Form.Group>
                     <Form.Control
                       name="username"
-                
                       type="text"
                       value={editFormData.username}
                       onChange={(value) =>
@@ -446,7 +451,6 @@ const Users = (props) => {
                         setEditFormData({ ...editFormData, email: value })
                       }
                       placeholder="Email"
-                     
                     />
                   </Form.Group>
                   <Form.Group>
@@ -462,13 +466,17 @@ const Users = (props) => {
                     </div>
                   </Form.Group>
                   <div style={{ textAlign: "end" }}>
-                    <Button type="submit" appearance="primary" onClick={handleEditSubmit}>
+                    <Button
+                      type="submit"
+                      appearance="primary"
+                      onClick={handleEditSubmit}
+                    >
                       Save
                     </Button>
                     <Button
                       onClick={() => setEditModal(false)}
                       appearance="subtle"
-                      style={{margin: "0px 10px"}}
+                      style={{ margin: "0px 10px" }}
                     >
                       Cancel
                     </Button>

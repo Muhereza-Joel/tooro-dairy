@@ -22,7 +22,7 @@ const TopBar = (props) => {
                 <strong>foobar</strong>
               </Dropdown.Item>
               <Dropdown.Separator />
-              <Dropdown.Item>Your profile</Dropdown.Item>
+              <Dropdown.Item onClick={() => {navigate('/dashboard/users/my-profile')}}>My profile</Dropdown.Item>
               
               <Dropdown.Separator />
               <Dropdown.Item>Help</Dropdown.Item>

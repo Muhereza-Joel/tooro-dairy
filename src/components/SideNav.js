@@ -18,7 +18,7 @@ const SideNav = (props) => {
             <Nav.Item eventKey="1" icon={<DashboardIcon />} onClick={() => (navigate("/dashboard"))}>
               Dashboard
             </Nav.Item>
-            <Nav.Menu eventKey={2} title="User Management" icon={<GroupIcon />}>
+            <Nav.Menu eventKey="2" title="User Management" icon={<GroupIcon />}>
               <Nav.Item eventKey={2 - 1} onClick={() =>{navigate("/dashboard/users")}}>All Users</Nav.Item>
               <Nav.Item eventKey={2 - 2} onClick={() => {navigate("/dashboard/users/manage")}}>Manage Users</Nav.Item>
             </Nav.Menu>

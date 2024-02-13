@@ -65,16 +65,35 @@ const ManageUsers = (props) => {
         }
       );
 
+      const data = await response.json();
+
       if (response.ok) {
-        toast.success("User created successfully!", {
-          style: { backgroundColor: "#cce6e8", color: "#333" },
-        });
+        if (!data || !data.errors) {
+          toast.success("Account created successfully...", {
+            style: { backgroundColor: "#cce6e8", color: "#333" },
+          });
+
+          setFormData({
+            username: "",
+            email: "",
+            role: "",
+          });
+
+        } else {
+          const errors = data.errors;
+
+          // Iterate through the keys of errors object
+          Object.keys(errors).forEach((errorType) => {
+            const errorMessage = errors[errorType];
+
+            // Display a toast for each error
+            toast.error(`${errorMessage}`, {
+              style: { backgroundColor: "#fcd0d0", color: "#333" },
+            });
+          });
+        }
         
-        setFormData({
-          username: "",
-          email: "",
-          role: "",
-        });
+        
       }
 
     } catch (error) {

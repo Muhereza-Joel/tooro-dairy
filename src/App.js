@@ -7,6 +7,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Users from './components/Users';
 import ManageUsers from './components/ManageUsers';
+import Profile from './components/Profile';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
@@ -31,6 +32,7 @@ function App() {
             <Route path='/auth/register' element={<Register />} />
             <Route path='/dashboard/users' element={<Users theme={theme} onChangeTheme={toggleTheme} />}/>
             <Route path='/dashboard/users/manage' element={<ManageUsers theme={theme} onChangeTheme={toggleTheme} />}/>
+            <Route path='/dashboard/users/my-profile' element={<Profile theme={theme} onChangeTheme={toggleTheme} />}/>
           </Routes>
         </Router>
       </Container>
