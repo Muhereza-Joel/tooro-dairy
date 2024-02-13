@@ -41,7 +41,7 @@ const Dashboard = (props) => (
                 <DashboardPanel />
               </Col>
               <Col xs={24} sm={24} md={8}>
-              <Panel shaded>
+              <Panel shaded bordered>
                   <Calendar />
                 </Panel>
               </Col>
