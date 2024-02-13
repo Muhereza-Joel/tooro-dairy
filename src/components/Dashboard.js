@@ -13,6 +13,7 @@ import {
 } from "rsuite";
 import SideNav from "./SideNav";
 import DashboardPanel from "./DashboardPanel";
+import TopBar from "./TopBar";
 
 const Dashboard = (props) => (
   <div className="show-container">
@@ -29,7 +30,7 @@ const Dashboard = (props) => (
             zIndex: 1000
           }}
         >
-          Header
+          <TopBar/>
         </Header>
         <Content>
           <Grid fluid>

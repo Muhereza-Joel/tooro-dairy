@@ -10,7 +10,7 @@ const SideNav = (props) => {
 
   return (
     <div style={{ width: 240 }}>
-      <Sidenav defaultOpenKeys={["3", "4"]}>
+      <Sidenav defaultOpenKeys={["2", "3", "4"]}>
         <Sidenav.Body
           style={{ height: "100vh", position: "sticky", top: 0, left: 0 }}
         >
