@@ -162,7 +162,7 @@ const Register = () => {
               appearance="default"
               type="reset"
               onClick={() => {
-                navigate("/");
+                navigate("/auth/login");
               }}
             >
               Back To Login

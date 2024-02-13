@@ -20,13 +20,8 @@ import SideNav from "./SideNav";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TopBar from "./TopBar";
 
-const nameRule = Schema.Types.StringType().isRequired(
-  "The username is required."
-);
-const emailRule = Schema.Types.StringType()
-  .isEmail("Please enter a valid email address.")
-  .isRequired("Email is required");
 const { Column, HeaderCell, Cell } = Table;
 const selectData = ["administrator", "customer", "user"].map((item) => ({
   label: item,
@@ -136,6 +131,12 @@ const Users = (props) => {
 
   const handleEditSubmit = async () => {
     try {
+      if (!editFormData.username || editFormData.username.trim() === "") {
+        toast.error("The username and email are required...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
+        return;
+      }
       // Send a PUT request to the server with the updated user details
       const response = await fetch(
         "http://localhost:3002/tdmis/api/v1/auth/user",
@@ -242,20 +243,7 @@ const Users = (props) => {
               zIndex: 1000,
             }}
           >
-            <div className="show-grid">
-              <FlexboxGrid style={{ margin: "10px 25px" }}>
-                <FlexboxGrid.Item
-                  colspan={12}
-                  style={{ fontSize: "1.2rem" }}
-                ></FlexboxGrid.Item>
-                <FlexboxGrid.Item
-                  colspan={12}
-                  style={{ textAlign: "end", fontSize: "1.3rem" }}
-                >
-                  Hello, Miria
-                </FlexboxGrid.Item>
-              </FlexboxGrid>
-            </div>
+            <TopBar />
           </Header>
           <Content
             style={{ height: "90vh", padding: "0px 20px", overflow: "auto" }}
@@ -337,17 +325,17 @@ const Users = (props) => {
                       Added On
                     </HeaderCell>
                     <Cell style={{ fontSize: "1.0rem" }}>
-                      {moment(data.created_at).format("MMMM D, YYYY")}
+                    {(rowData) => moment(rowData.created_at).format("MMMM D, YYYY")}
                     </Cell>
                   </Column>
                   <Column width={200} flexGrow={1}>
                     <HeaderCell
                       style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                     >
-                      Last Updated On
+                      Last Updated
                     </HeaderCell>
-                    <Cell style={{ fontSize: "1.0rem" }}>
-                      {moment(data.updated_at).format("MMMM D, YYYY")}
+                    <Cell style={{ fontSize: "1.0rem" }} dataKey="updated_at">
+                    {(rowData) => moment(rowData.updated_at).fromNow()}
                     </Cell>
                   </Column>
                   <Column width={150} fixed="right">
@@ -436,27 +424,29 @@ const Users = (props) => {
                   <strong>Note: </strong>The username will be stored in
                   lowercase and separated by hythens.
                 </Message>
-                <Form fluid onSubmit={handleEditSubmit}>
+                <Form fluid>
                   <Form.Group>
                     <Form.Control
                       name="username"
+                
+                      type="text"
                       value={editFormData.username}
                       onChange={(value) =>
                         setEditFormData({ ...editFormData, username: value })
                       }
                       placeholder="Username"
-                      rule={nameRule}
                     />
                   </Form.Group>
                   <Form.Group>
                     <Form.Control
                       name="email"
+                      type="text"
                       value={editFormData.email}
                       onChange={(value) =>
                         setEditFormData({ ...editFormData, email: value })
                       }
                       placeholder="Email"
-                      rule={emailRule}
+                     
                     />
                   </Form.Group>
                   <Form.Group>
@@ -472,12 +462,13 @@ const Users = (props) => {
                     </div>
                   </Form.Group>
                   <div style={{ textAlign: "end" }}>
-                    <Button type="submit" appearance="primary">
+                    <Button type="submit" appearance="primary" onClick={handleEditSubmit}>
                       Save
                     </Button>
                     <Button
                       onClick={() => setEditModal(false)}
                       appearance="subtle"
+                      style={{margin: "0px 10px"}}
                     >
                       Cancel
                     </Button>
