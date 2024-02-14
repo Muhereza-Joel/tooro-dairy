@@ -3,7 +3,7 @@ import { Container, Content, FlexboxGrid, Header, Sidebar, Form, Placeholder, Ta
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
 
-const ViewCollections = (props) => {
+const ViewSales = (props) => {
   const [data, setData] = useState([]);
   return (
     <div>
@@ -29,7 +29,7 @@ const ViewCollections = (props) => {
             <div className="show-grid">
               <FlexboxGrid style={{ marginBottom: 10 }}>
                 <FlexboxGrid.Item style={{ fontSize: "1.5rem" }} colspan={6}>
-                  Showing All Collections
+                  Showing All Sales
                 </FlexboxGrid.Item>
                 <FlexboxGrid.Item colspan={6}>
                   <Form>
@@ -63,4 +63,4 @@ const ViewCollections = (props) => {
   );
 };
 
-export default ViewCollections;
+export default ViewSales;

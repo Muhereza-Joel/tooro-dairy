@@ -14,7 +14,6 @@ import {
   Modal,
   InputPicker,
   Message,
-  Schema,
 } from "rsuite";
 import SideNav from "./SideNav";
 import moment from "moment";

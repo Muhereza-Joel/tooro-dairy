@@ -19,20 +19,20 @@ const SideNav = (props) => {
               Dashboard
             </Nav.Item>
             <Nav.Menu eventKey="2" title="User Management" icon={<GroupIcon />}>
-              <Nav.Item eventKey={2 - 1} onClick={() =>{navigate("/dashboard/users")}}>All Users</Nav.Item>
-              <Nav.Item eventKey={2 - 2} onClick={() => {navigate("/dashboard/users/manage")}}>Manage Users</Nav.Item>
+              <Nav.Item eventKey="2-1" onClick={() =>{navigate("/dashboard/users")}}>All Users</Nav.Item>
+              <Nav.Item eventKey="2-2" onClick={() => {navigate("/dashboard/users/manage")}}>Manage Users</Nav.Item>
             </Nav.Menu>
 
             <Nav.Menu eventKey="3" title="Stock Management" icon={<MagicIcon />}>
-              <Nav.Item eventKey="3-1" onClick={() => {navigate("/dashboard/stock/add")}}>Add New Record</Nav.Item>
+              <Nav.Item eventKey="3-1" onClick={() => {navigate("/dashboard/stock/add")}}>Record Collections</Nav.Item>
               <Nav.Item eventKey="3-2" onClick={() => {navigate("/dashboard/stock")}}>View Collections</Nav.Item>
               <Nav.Item eventKey="3-3" onClick={() => {navigate("/dashboard/stock/manage")}}>Manage Stock</Nav.Item>
             </Nav.Menu>
 
-            <Nav.Menu eventKey="4" title="Sales" icon={<MagicIcon />}>
-              <Nav.Item eventKey="4-1">Add New Record</Nav.Item>
-              <Nav.Item eventKey="4-2">View Sales</Nav.Item>
-              <Nav.Item eventKey="4-3">Manage Sales</Nav.Item>
+            <Nav.Menu eventKey="4" title="Sales Management" icon={<MagicIcon />}>
+              <Nav.Item eventKey="4-1" onClick={() => {navigate("/dashboard/sales/add")}}>Record Sales</Nav.Item>
+              <Nav.Item eventKey="4-2" onClick={() => {navigate("/dashboard/sales")}}>View Sales</Nav.Item>
+              <Nav.Item eventKey="4-3" onClick={() => {navigate("/dashboard/sales/manage")}}>Manage Sales</Nav.Item>
             </Nav.Menu>
             <Nav.Menu eventKey="5" title="Settings" icon={<GearCircleIcon />}>
               <Nav.Item eventKey="5-1">My Profile</Nav.Item>
