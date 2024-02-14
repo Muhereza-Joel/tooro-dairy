@@ -23,10 +23,10 @@ const SideNav = (props) => {
               <Nav.Item eventKey={2 - 2} onClick={() => {navigate("/dashboard/users/manage")}}>Manage Users</Nav.Item>
             </Nav.Menu>
 
-            <Nav.Menu eventKey="3" title="Collections" icon={<MagicIcon />}>
-              <Nav.Item eventKey="3-1">Add New Collection</Nav.Item>
-              <Nav.Item eventKey="3-2">View Collections</Nav.Item>
-              <Nav.Item eventKey="3-3">Manage Collection</Nav.Item>
+            <Nav.Menu eventKey="3" title="Stock Management" icon={<MagicIcon />}>
+              <Nav.Item eventKey="3-1" onClick={() => {navigate("/dashboard/stock/add")}}>Add New Record</Nav.Item>
+              <Nav.Item eventKey="3-2" onClick={() => {navigate("/dashboard/stock")}}>View Collections</Nav.Item>
+              <Nav.Item eventKey="3-3" onClick={() => {navigate("/dashboard/stock/manage")}}>Manage Stock</Nav.Item>
             </Nav.Menu>
 
             <Nav.Menu eventKey="4" title="Sales" icon={<MagicIcon />}>
