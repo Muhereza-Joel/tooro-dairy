@@ -23,7 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 import TopBar from "./TopBar";
 
 const { Column, HeaderCell, Cell } = Table;
-const selectData = ["administrator", "customer", "user"].map((item) => ({
+const selectData = ["administrator", "customer", "supplier", "user"].map((item) => ({
   label: item,
   value: item,
 }));

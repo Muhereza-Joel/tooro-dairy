@@ -29,7 +29,7 @@ const emailRule = Schema.Types.StringType()
 const roleRule = Schema.Types.StringType().isRequired("Role is required");
 
 const ManageUsers = (props) => {
-  const selectData = ["administrator", "customer", "user"].map((item) => ({
+  const selectData = ["administrator", "customer","supplier", "user"].map((item) => ({
     label: item,
     value: item,
   }));
