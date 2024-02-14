@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CustomProvider, Container } from 'rsuite';
-import 'rsuite/dist/rsuite.min.css';
+git
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Register from './components/Register';
