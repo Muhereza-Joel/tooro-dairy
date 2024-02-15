@@ -85,7 +85,7 @@ const ManageStock = (props) => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Account created successfully...", {
+        toast.success("Product created successfully...", {
           style: { backgroundColor: "#cce6e8", color: "#333" },
         });
 
@@ -290,7 +290,9 @@ const ManageStock = (props) => {
                     type="info"
                     style={{ marginBottom: "15px" }}
                   >
-                    Set up buying prices and products types for your dairy...
+                    <strong>Set up price scales for your dairy... </strong>
+
+                    The scales will be used when recording sales and stock
                   </Message>
                   <Panel bordered>
                     <Form
@@ -346,18 +348,9 @@ const ManageStock = (props) => {
                 </Col>
                 <Col>
                   <Panel bordered>
-                    <Message
-                      showIcon
-                      type="subtle"
-                      style={{ marginBottom: "15px" }}
-                    >
-                      <strong>
-                        Showing all registered products in your store. This data
-                        will be used when stocking and at the point of sale.
-                      </strong>
-                    </Message>
-                    <Table data={tableData} autoHeight cellBordered fluid>
-                      <Column width={200}>
+                    
+                    <Table data={tableData} autoHeight cellBordered width={750}>
+                      <Column width={200} align="center">
                         <HeaderCell
                           style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                         >
@@ -366,7 +359,7 @@ const ManageStock = (props) => {
                         <Cell dataKey="product_name" />
                       </Column>
 
-                      <Column width={180}>
+                      <Column width={200} align="center">
                         <HeaderCell
                           style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                         >
@@ -375,7 +368,7 @@ const ManageStock = (props) => {
                         <Cell dataKey="buying_price" />
                       </Column>
 
-                      <Column width={180}>
+                      <Column width={200} align="center">
                         <HeaderCell
                           style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                         >
@@ -383,7 +376,7 @@ const ManageStock = (props) => {
                         </HeaderCell>
                         <Cell dataKey="selling_price" />
                       </Column>
-                      <Column width={160} fixed="right">
+                      <Column width={150} fixed="right" align="center">
                         <HeaderCell
                           style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                         >

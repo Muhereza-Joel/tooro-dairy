@@ -10,7 +10,7 @@ const SideNav = (props) => {
 
   return (
     <div style={{ width: 240 }}>
-      <Sidenav defaultOpenKeys={["2", "3", "4"]}>
+      <Sidenav defaultOpenKeys={["3", "4"]}>
         <Sidenav.Body
           style={{ height: "100vh", position: "sticky", top: 0, left: 0 }}
         >
@@ -34,20 +34,12 @@ const SideNav = (props) => {
               <Nav.Item eventKey="4-2" onClick={() => {navigate("/dashboard/sales")}}>View Sales</Nav.Item>
               <Nav.Item eventKey="4-3" onClick={() => {navigate("/dashboard/sales/manage")}}>Manage Sales</Nav.Item>
             </Nav.Menu>
-            <Nav.Menu eventKey="5" title="Settings" icon={<GearCircleIcon />}>
-              <Nav.Item eventKey="5-1">My Profile</Nav.Item>
-              <Nav.Item eventKey="5-2">Channels</Nav.Item>
-              <Nav.Item eventKey="5-3">Versions</Nav.Item>
-              <Nav.Menu eventKey="5-5" title="Custom Action">
-                <Nav.Item eventKey="5-5-1">Action Name</Nav.Item>
-                <Nav.Item eventKey="5-5-2">Action Params</Nav.Item>
-              </Nav.Menu>
-            </Nav.Menu>
+            
           </Nav>
           <IconButton
             icon={props.theme === "light" ? "Toggle Theme" : "Toggle Theme"}
             appearance="primary"
-            style={{ position: "fixed", bottom: 20, left: 20, color: "#000" }} // Set text color explicitly
+            style={{ position: "fixed", bottom: 30, left: 50}} // Set text color explicitly
             onClick={props.onChangeTheme}
           />
         </Sidenav.Body>

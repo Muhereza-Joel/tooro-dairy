@@ -93,13 +93,13 @@ const Profile = (props) => {
   };
 
   const handleEditClick = async () => {
+    setIsEditing(!isEditing);
     const isEmptyField = Object.values(formData).some((value) => value === "");
 
     if (isEmptyField) {
       toast.error("Please fill in all fields", {
         style: { backgroundColor: "#fcd0d0", color: "#333" },
       });
-      setIsEditing(!isEditing);
       return;
     }
 
@@ -146,16 +146,7 @@ const Profile = (props) => {
     }
   };
 
-  const avatorStyle = {
-    width: "350px",
-    height: "350px",
-    objectFit: "cover",
-    border: "2px solid #299ea6",
-    marginTop: "1rem",
-    marginBottom: "1rem",
-    backgroundColor: "#fff",
-    borderRadius: "50%",
-  };
+  
 
   return (
     <div>
