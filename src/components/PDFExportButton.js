@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Document, Page, span, pdfjs } from "react-pdf";
+import { Document, Page, pdfjs } from "react-pdf";
 import { Button } from "rsuite";
 
 const PdfExportButton = ({ data }) => {
@@ -10,42 +10,39 @@ const PdfExportButton = ({ data }) => {
     setNumPages(numPages);
   };
 
-  const exportToPdf = () => {
-    const pdfContent = (
-      <Document>
-        <Page size="A4">
-          <span style={{ fontSize: 18, marginBottom: 10 }}>Table Content</span>
-          {/* Header Row */}
-          <span
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              fontWeight: "bold",
-            }}
-          >
-            <span style={{ flex: 1 }}>SNo.</span>
-            <span style={{ flex: 2 }}>Username</span>
-            <span style={{ flex: 2 }}>Email</span>
-            <span style={{ flex: 1 }}>Role</span>
-            <span style={{ flex: 2 }}>Added On</span>
-            <span style={{ flex: 2 }}>Last Updated On</span>
-          </span>
-
-          {/* Data Rows */}
-          {data.map((item, index) => (
-            <span key={index} style={{ display: "flex", flexDirection: "row" }}>
-              <span style={{ flex: 1 }}>{index + 1}</span>
-              <span style={{ flex: 2 }}>{item.username}</span>
-              <span style={{ flex: 2 }}>{item.email}</span>
-              <span style={{ flex: 1 }}>{item.role}</span>
-              <span style={{ flex: 2 }}>{item.created_at}</span>
-              <span style={{ flex: 2 }}>{item.updated_at}</span>
-            </span>
-          ))}
-        </Page>
-      </Document>
+  const generatePdfContent = () => {
+    return (
+      <div>
+        <h2>Table Content</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>SNo.</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Added On</th>
+              <th>Last Updated On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{item.username}</td>
+                <td>{item.email}</td>
+                <td>{item.role}</td>
+                <td>{item.created_at}</td>
+                <td>{item.updated_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
+  };
 
+  const exportToPdf = () => {
     const pdfWindow = window.open("");
     pdfWindow.document.write(`
       <html>
@@ -54,7 +51,7 @@ const PdfExportButton = ({ data }) => {
         </head>
         <body>
           <h1>PDF Export</h1>
-          ${pdfContent}
+          ${generatePdfContent().outerHTML}
         </body>
       </html>
     `);
