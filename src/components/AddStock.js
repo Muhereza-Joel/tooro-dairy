@@ -167,40 +167,59 @@ const AddStock = (props) => {
 
   const handleFormSubmit = async () => {
     try {
-      
       const { id: userId } = userData;
       const productId = selectedProduct ? selectedProduct.id : null;
-  
+
       const requestBody = {
         ...formData,
         stockPlan: selectedStockPlan,
         userId: userId,
         productId: productId,
       };
-  
-      const response = await fetch("http://localhost:3002/tdmis/api/v1/stock/collections", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any other headers if needed
-        },
-        body: JSON.stringify(requestBody),
-      });
-  
+
+      const response = await fetch(
+        "http://localhost:3002/tdmis/api/v1/stock/collections",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other headers if needed
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
       if (response.ok) {
         const responseData = await response.json();
-        console.log("Success:", responseData);
-        // Add any further logic after a successful request
+        toast.success("Collection details saved successfully...", {
+          style: { backgroundColor: "#cce6e8", color: "#333" },
+        });
+
+        setFormData({
+          quantity: "",
+          unitPrice: "",
+          amountPayed: 0,
+          total: 0,
+          balance: 0,
+          payed: "not-payed",
+        });
+
+        setSelectedStockPlan(null);
+        setUserData(null);
+        setSearchData({ searchTerm: "" });
       } else {
         console.error("Failed to submit form:", response.statusText);
-        // Handle error cases if needed
+        toast.error("Failed to connect to the server...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      // Handle other errors if needed
+      toast.error("Failed to connect to the server...", {
+        style: { backgroundColor: "#fcd0d0", color: "#333" },
+      });
     }
   };
-  
 
   const avatorStyle = {
     width: "200px",
@@ -375,8 +394,9 @@ const AddStock = (props) => {
                   <Panel bordered>
                     {selectedStockPlan != null ? (
                       <div>
-                        <Message type="info" style={{marginBottom: "10px"}}>
-                          <strong>Note:</strong> When you change the stock plan, you have to re fill this form again.
+                        <Message type="info" style={{ marginBottom: "10px" }}>
+                          <strong>Note:</strong> When you change the stock plan,
+                          you have to re fill this form again.
                         </Message>
                         <SelectPicker
                           key={selectKey}
