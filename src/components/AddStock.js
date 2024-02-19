@@ -39,7 +39,7 @@ const AddStock = (props) => {
     amountPayed: 0,
     total: 0,
     balance: 0,
-    payed: "not-payed",
+    payed: "not-paid",
   });
 
   const [userData, setUserData] = useState(null);
@@ -102,7 +102,7 @@ const AddStock = (props) => {
       amountPayed: 0,
       total: 0,
       balance: 0,
-      payed: "not-payed",
+      payed: "not-paid",
     });
     setStep(2);
     setSelectKey((prevKey) => prevKey + 1);
@@ -149,11 +149,11 @@ const AddStock = (props) => {
     const total = selectedProduct.buying_price * quantity;
 
     let balance = 0;
-    if (selectedPaymentOption === "not-payed") {
+    if (selectedPaymentOption === "not-paid") {
       balance = total;
     } else if (selectedPaymentOption === "has-balance") {
       balance = total - amountPayed;
-    } else if (selectedPaymentOption === "payed") {
+    } else if (selectedPaymentOption === "paid") {
       balance = 0;
     }
 
@@ -201,7 +201,7 @@ const AddStock = (props) => {
           amountPayed: 0,
           total: 0,
           balance: 0,
-          payed: "not-payed",
+          payed: "not-paid",
         });
 
         setSelectedStockPlan(null);
@@ -435,8 +435,8 @@ const AddStock = (props) => {
                                   value={selectedPaymentOption}
                                   onChange={handlePaymentOptionChange}
                                 >
-                                  <Radio value="not-payed">Not Payed</Radio>
-                                  <Radio value="payed">Payed</Radio>
+                                  <Radio value="not-paid">Not Paid</Radio>
+                                  <Radio value="paid">Paid</Radio>
                                   <Radio value="has-balance">Has Balance</Radio>
                                 </RadioGroup>
                               </Form.Group>
@@ -458,7 +458,7 @@ const AddStock = (props) => {
 
                           {selectedStockPlan === "daily" ? (
                             <div>
-                              {selectedPaymentOption === "not-payed" && (
+                              {selectedPaymentOption === "not-paid" && (
                                 <div>
                                   <Form.Group>
                                     <Form.ControlLabel>
@@ -482,7 +482,7 @@ const AddStock = (props) => {
                                 </div>
                               )}
 
-                              {selectedPaymentOption === "payed" && (
+                              {selectedPaymentOption === "paid" && (
                                 <div>
                                   <Form.Group style={{ marginTop: "10px" }}>
                                     <Form.ControlLabel>Total</Form.ControlLabel>
