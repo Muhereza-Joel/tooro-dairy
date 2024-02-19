@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Container,
   Content,
@@ -19,18 +21,15 @@ import {
   Modal,
   Loader,
   Panel,
+  Message,
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
 
-const selectPickerData = [
-  "Daily Plan",
-  "Weekly Plan",
-  "Monthly Plan",
-  "Paid",
-  "Not paid",
-  "Has Balance",
-].map((item) => ({ label: item, value: item }));
+const selectPickerData = ["daily", "weekly", "monthly"].map((item) => ({
+  label: item,
+  value: item,
+}));
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -53,6 +52,8 @@ const ViewCollections = (props) => {
 
   const [open, setOpen] = React.useState(false);
   const [collectionToView, setCollectionToView] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const handleOpen = (collectionId) => {
     setOpen(true);
@@ -82,8 +83,8 @@ const ViewCollections = (props) => {
     fetchData();
   }, []);
 
-  const handleDelete = (userId) => {
-    setEditingCollectionId(userId);
+  const handleDelete = (collectionId) => {
+    setEditingCollectionId(collectionId);
     setDeleteModal(true);
   };
 
@@ -127,6 +128,7 @@ const ViewCollections = (props) => {
       setLoading(false);
       setSortColumn(sortColumn);
       setSortType(sortType);
+      handleSearch(""); // Reset search when sorting
     }, 500);
   };
 
@@ -135,14 +137,75 @@ const ViewCollections = (props) => {
     setLimit(dataKey);
   };
 
+  const handleFilterChange = (value) => {
+    setSelectedFilter(value);
+    setPage(1);
+
+    // If no filter is selected, reset the data to the original set
+    if (!value) {
+      setData(originalData);
+    }
+  };
+
+  useEffect(() => {
+    handleSearch(""); // Trigger search when selectedFilter or selectedStatus changes
+  }, [selectedFilter, selectedStatus]);
+  
+
   const handleSearch = (value) => {
     // Use originalData for searching
-    const filteredData = originalData.filter((item) =>
-      Object.values(item).some((val) =>
+    const filteredData = originalData.filter((item) => {
+      const includesValue = Object.values(item).some((val) =>
         val.toString().toLowerCase().includes(value.toLowerCase())
-      )
-    );
+      );
+  
+      const filterCondition = selectedFilter && item.stock_plan === selectedFilter;
+      const statusCondition = selectedStatus && item.status === selectedStatus;
+  
+      // Combine filter, stock_plan, status, and search conditions
+      return (
+        (includesValue && filterCondition && statusCondition) ||
+        (selectedFilter && !selectedStatus && includesValue && filterCondition) ||
+        (!selectedFilter && selectedStatus && includesValue && statusCondition) ||
+        (!selectedFilter && !selectedStatus && includesValue)
+      );
+    });
+  
     setData(filteredData);
+  };
+  
+  
+
+  const handleDeleteSubmit = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/tdmis/api/v1/stock/collections/${editingCollectionId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Remove the deleted user from the data in the table
+        const updatedData = data.filter(
+          (user) => user.id !== editingCollectionId
+        );
+        setData(updatedData);
+        setDeleteModal(false);
+        setOpen(false);
+        toast.success("Record Deleted Successfully...", {
+          style: { backgroundColor: "#cce6e8", color: "#333" },
+        });
+      } else {
+        toast.error("Error deleting record. Please try again later.", {
+          style: { backgroundColor: "#ff6666", color: "#333" },
+        });
+      }
+    } catch (error) {
+      toast.error("Error deleting record. Please try again later.", {
+        style: { backgroundColor: "#ff6666", color: "#333" },
+      });
+    }
   };
 
   return (
@@ -179,7 +242,7 @@ const ViewCollections = (props) => {
                   </Form>
                 </Col>
                 <Col xs={5}>
-                  Filter Collections By{" "}
+                  Filter by stock plan{" "}
                   <Stack
                     spacing={10}
                     direction="column"
@@ -188,6 +251,24 @@ const ViewCollections = (props) => {
                     <SelectPicker
                       data={selectPickerData}
                       style={{ width: 224 }}
+                      onChange={handleFilterChange}
+                    />
+                  </Stack>
+                </Col>
+                <Col xs={5}>
+                  Filter by payement status{" "}
+                  <Stack
+                    spacing={10}
+                    direction="column"
+                    alignItems="flex-start"
+                  >
+                    <SelectPicker
+                      data={["paid", "not-paid", "has-balance"].map((item) => ({
+                        label: item,
+                        value: item,
+                      }))}
+                      style={{ width: 224 }}
+                      onChange={(value) => setSelectedStatus(value)}
                     />
                   </Stack>
                 </Col>
@@ -435,13 +516,60 @@ const ViewCollections = (props) => {
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={handleClose} appearance="primary">
-                  Ok
+                  Hide
+                </Button>
+                <Button
+                  color="red"
+                  appearance="primary"
+                  onClick={() => handleDelete(editingCollectionId)}
+                >
+                  Delete Stock Record
                 </Button>
                 <Button onClick={handleClose} appearance="subtle">
                   Cancel
                 </Button>
               </Modal.Footer>
             </Modal>
+
+            <Modal
+              open={deleteModal}
+              onClose={() => setDeleteModal(false)}
+              size="sm"
+            >
+              <Modal.Header>
+                <Modal.Title>Confirm Delete</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Message showIcon type="error" style={{ marginBottom: "15px" }}>
+                  <strong>Note: </strong>Deleting this record will delete all
+                  data atached to this collection, Continue with caution because
+                  this action is undoable...
+                </Message>
+                Are you sure you want to continue with this action?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onClick={() => setDeleteModal(false)}
+                  appearance="subtle"
+                >
+                  Cancel
+                </Button>
+                <Button appearance="primary" onClick={handleDeleteSubmit}>
+                  Yes, Delete Record
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <ToastContainer
+              position="bottom-left"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </Content>
           <Footer
             style={{
