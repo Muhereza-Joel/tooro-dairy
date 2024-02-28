@@ -3,6 +3,7 @@ import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Avator from "../assets/images/avator.jpg";
+import Cookies from "js-cookie";
 import {
   Container,
   Content,
@@ -43,6 +44,7 @@ const ViewSales = (props) => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [role, setRole] = useState(null);
   // State to track the user being edited
   const [editingrecordId, setEditingRecordId] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -58,9 +60,7 @@ const ViewSales = (props) => {
   const handleOpen = (recordId) => {
     setOpen(true);
     setEditingRecordId(recordId);
-    const record = originalData.find(
-      (record) => record.id === recordId
-    );
+    const record = originalData.find((record) => record.id === recordId);
     setRecordToView(record);
   };
 
@@ -82,6 +82,27 @@ const ViewSales = (props) => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const userCookie = Cookies.get("tdmis");
+
+    if (userCookie) {
+      try {
+        const userDataFromCookie = JSON.parse(userCookie);
+
+        setRole(userDataFromCookie.role);
+
+        if (typeof userDataFromCookie === "object") {
+        } else {
+          console.error("Invalid user data format in the cookie");
+        }
+      } catch (error) {
+        console.error("Error parsing JSON from the cookie:", error);
+      }
+    }
+  }, []);
+
+  const isAdmin = role === "administrator";
 
   const handleDelete = (recordId) => {
     setEditingRecordId(recordId);
@@ -150,7 +171,6 @@ const ViewSales = (props) => {
   useEffect(() => {
     handleSearch(""); // Trigger search when selectedFilter or selectedStatus changes
   }, [selectedFilter]);
-  
 
   const handleSearch = (value) => {
     // Use originalData for searching
@@ -158,9 +178,10 @@ const ViewSales = (props) => {
       const includesValue = Object.values(item).some((val) =>
         val.toString().toLowerCase().includes(value.toLowerCase())
       );
-  
-      const filterCondition = selectedFilter && item.sales_plan === selectedFilter;
-  
+
+      const filterCondition =
+        selectedFilter && item.sales_plan === selectedFilter;
+
       // Combine filter, stock_plan, status, and search conditions
       return (
         (includesValue && filterCondition) ||
@@ -169,11 +190,9 @@ const ViewSales = (props) => {
         (!selectedFilter && includesValue)
       );
     });
-  
+
     setData(filteredData);
   };
-  
-  
 
   const handleDeleteSubmit = async () => {
     try {
@@ -186,9 +205,7 @@ const ViewSales = (props) => {
 
       if (response.ok) {
         // Remove the deleted user from the data in the table
-        const updatedData = data.filter(
-          (user) => user.id !== editingrecordId
-        );
+        const updatedData = data.filter((user) => user.id !== editingrecordId);
         setData(updatedData);
         setDeleteModal(false);
         setOpen(false);
@@ -254,7 +271,7 @@ const ViewSales = (props) => {
                     />
                   </Stack>
                 </Col>
-                
+
                 <Col xs={8} style={{ marginTop: "1.2rem" }}>
                   <ButtonGroup>
                     <Button>Export To Pdf</Button>
@@ -308,7 +325,10 @@ const ViewSales = (props) => {
                     >
                       Phone Number
                     </HeaderCell>
-                    <Cell dataKey="phone_number" style={{ fontSize: "1.0rem" }} />
+                    <Cell
+                      dataKey="phone_number"
+                      style={{ fontSize: "1.0rem" }}
+                    />
                   </Column>
 
                   <Column width={170} sortable>
@@ -329,10 +349,7 @@ const ViewSales = (props) => {
                     >
                       Selling Price
                     </HeaderCell>
-                    <Cell
-                      dataKey="unit_price"
-                      style={{ fontSize: "1.0rem" }}
-                    />
+                    <Cell dataKey="unit_price" style={{ fontSize: "1.0rem" }} />
                   </Column>
                   <Column width={120} sortable>
                     <HeaderCell
@@ -351,8 +368,6 @@ const ViewSales = (props) => {
                     </HeaderCell>
                     <Cell dataKey="sales_plan" style={{ fontSize: "1.0rem" }} />
                   </Column>
-
-                  
 
                   <Column width={200} flexGrow={1}>
                     <HeaderCell
@@ -443,7 +458,9 @@ const ViewSales = (props) => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.ControlLabel>Phone Number</Form.ControlLabel>
+                              <Form.ControlLabel>
+                                Phone Number
+                              </Form.ControlLabel>
                               <Form.Control
                                 readOnly
                                 value={recordToView.phone_number}
@@ -452,9 +469,7 @@ const ViewSales = (props) => {
                           </Col>
                           <Col xs={12}>
                             <Form.Group style={{ marginTop: "2rem" }}>
-                              <Form.ControlLabel>
-                                Sales Plan
-                              </Form.ControlLabel>
+                              <Form.ControlLabel>Sales Plan</Form.ControlLabel>
                               <Form.Control
                                 readOnly
                                 value={recordToView.sales_plan}
@@ -477,7 +492,9 @@ const ViewSales = (props) => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.ControlLabel>Discount Amount</Form.ControlLabel>
+                              <Form.ControlLabel>
+                                Discount Amount
+                              </Form.ControlLabel>
                               <Form.Control
                                 readOnly
                                 value={recordToView.discount_amount}
@@ -503,13 +520,15 @@ const ViewSales = (props) => {
                 <Button onClick={handleClose} appearance="primary">
                   Hide
                 </Button>
-                <Button
-                  color="red"
-                  appearance="primary"
-                  onClick={() => handleDelete(editingrecordId)}
-                >
-                  Delete Sale Record
-                </Button>
+                {isAdmin && (
+                  <Button
+                    color="red"
+                    appearance="primary"
+                    onClick={() => handleDelete(editingrecordId)}
+                  >
+                    Delete Sale Record
+                  </Button>
+                )}
                 <Button onClick={handleClose} appearance="subtle">
                   Cancel
                 </Button>

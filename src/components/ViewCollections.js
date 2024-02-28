@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
 import {
   Container,
   Content,
@@ -42,6 +43,7 @@ const ViewCollections = (props) => {
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [role, setRole] = useState(null);
   // State to track the user being edited
   const [editingCollectionId, setEditingCollectionId] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -82,6 +84,27 @@ const ViewCollections = (props) => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const userCookie = Cookies.get("tdmis");
+
+    if (userCookie) {
+      try {
+        const userDataFromCookie = JSON.parse(userCookie);
+
+        setRole(userDataFromCookie.role);
+
+        if (typeof userDataFromCookie === "object") {
+        } else {
+          console.error("Invalid user data format in the cookie");
+        }
+      } catch (error) {
+        console.error("Error parsing JSON from the cookie:", error);
+      }
+    }
+  }, []);
+
+  const isAdmin = role === "administrator";
 
   const handleDelete = (collectionId) => {
     setEditingCollectionId(collectionId);
@@ -518,13 +541,16 @@ const ViewCollections = (props) => {
                 <Button onClick={handleClose} appearance="primary">
                   Hide
                 </Button>
-                <Button
-                  color="red"
-                  appearance="primary"
-                  onClick={() => handleDelete(editingCollectionId)}
-                >
-                  Delete Stock Record
-                </Button>
+                {isAdmin && (
+                  <Button
+                    color="red"
+                    appearance="primary"
+                    onClick={() => handleDelete(editingCollectionId)}
+                  >
+                    Delete Stock Record
+                  </Button>
+
+                )}
                 <Button onClick={handleClose} appearance="subtle">
                   Cancel
                 </Button>

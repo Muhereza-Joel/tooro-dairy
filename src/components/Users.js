@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import {
   Table,
   Pagination,
@@ -29,6 +30,7 @@ const selectData = ["administrator", "customer", "supplier", "user"].map((item) 
 
 const Users = (props) => {
   const [limit, setLimit] = useState(10);
+  const [role, setRole] = useState(null);
   const [page, setPage] = useState(1);
   const [originalData, setOriginalData] = useState([]);
   const [data, setData] = useState([]);
@@ -110,6 +112,27 @@ const Users = (props) => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const userCookie = Cookies.get("tdmis");
+
+    if (userCookie) {
+      try {
+        const userDataFromCookie = JSON.parse(userCookie);
+
+        setRole(userDataFromCookie.role);
+
+        if (typeof userDataFromCookie === "object") {
+        } else {
+          console.error("Invalid user data format in the cookie");
+        }
+      } catch (error) {
+        console.error("Error parsing JSON from the cookie:", error);
+      }
+    }
+  }, []);
+
+  const isAdmin = role === "administrator";
 
   const handleDelete = (userId) => {
     setEditingUserId(userId);
@@ -343,6 +366,7 @@ const Users = (props) => {
                       {(rowData) => moment(rowData.updated_at).fromNow()}
                     </Cell>
                   </Column>
+                  {isAdmin && (
                   <Column width={150} fixed="right">
                     <HeaderCell
                       style={{ fontSize: "1.0rem", fontWeight: "bold" }}
@@ -378,6 +402,8 @@ const Users = (props) => {
                       }}
                     </Cell>
                   </Column>
+
+                  )}
                 </Table>
               </div>
             )}
