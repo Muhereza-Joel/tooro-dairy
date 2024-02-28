@@ -29,6 +29,8 @@ const AddSale = (props) => {
   const [step, setStep] = useState(0);
   const [userData, setUserData] = useState(null);
   const [selectedSalesPlan, setSelectedSalesPlan] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [filteredPlan, setFilteredPlan] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState({});
   const [products, setProducts] = useState([]);
   const [selectKey, setSelectKey] = useState(0);
@@ -39,10 +41,9 @@ const AddSale = (props) => {
   const [formData, setFormData] = useState({
     quantity: "",
     unitPrice: "",
-    amountPayed: 0,
+    discountAmount: 0,
+    taxAmount: 0,
     total: 0,
-    balance: 0,
-    payed: "not-paid",
   });
 
   useEffect(() => {
@@ -70,14 +71,71 @@ const AddSale = (props) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3002/tdmis/api/v1/sales/sales-settings"
+        );
+        if (response.ok) {
+          const salePlans = await response.json();
+          setPlans(salePlans);
+        } else {
+          toast.error("Failed to load products from the server...", {
+            style: { backgroundColor: "#fcd0d0", color: "#333" },
+          });
+        }
+      } catch (error) {
+        toast.error("Failed to connect to the server...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const data = products.map((item) => ({
     label: item.product_name,
     value: item.id,
   }));
 
+  const handleFormChange = (formValue) => {
+    const { quantity } = formValue;
+  
+    if (selectedProduct && selectedProduct.selling_price && filteredPlan) {
+      const total = selectedProduct.selling_price * quantity;
+      const discount = filteredPlan.discount;
+      const taxRate = filteredPlan.tax_rate;
+  
+      // Calculate discounted amount
+      const discountedAmount = (total * discount) / 100;
+  
+      // Calculate tax amount
+      const taxAmount = (total * taxRate) / 100;
+  
+      // Calculate final total amount after discount and tax
+      const finalTotal = total - discountedAmount + taxAmount;
+  
+      setFormData({
+        ...formValue,
+        total: finalTotal,
+      });
+    }
+  };
+  
+
   const handleProductChange = (value) => {
     const selected = products.find((product) => product.id === value);
     setSelectedProduct(selected);
+    setFormData({
+      quantity: 0,
+      unitPrice: "",
+      discountAmount: 0,
+      taxAmount: 0,
+      total: 0,
+    })
   };
 
   const handleSearchForm = (formValue) => {
@@ -119,6 +177,16 @@ const AddSale = (props) => {
     setStep(2);
     setSelectKey((prevKey) => prevKey + 1);
     setSelectedProduct({});
+
+    const selectedPlan = plans.find((plan) => plan.name === value);
+    setFilteredPlan(selectedPlan);
+    setFormData({
+      quantity: "",
+      unitPrice: "",
+      discountAmount: 0,
+      taxAmount: 0,
+      total: 0,
+    })
   };
 
   const avatorStyle = {
@@ -301,7 +369,11 @@ const AddSale = (props) => {
                           onChange={handleProductChange}
                         />
 
-                        <Form fluid>
+                        <Form
+                          fluid
+                          onChange={handleFormChange}
+                          formValue={formData}
+                        >
                           <Form.Group>
                             <Form.ControlLabel>
                               Unit Buying Price (Ugx)
@@ -309,10 +381,65 @@ const AddSale = (props) => {
                             <Form.Control
                               type="number"
                               readOnly
-                              value={selectedProduct.buying_price}
+                              value={selectedProduct ? selectedProduct.selling_price || 0 : 0}
                               name="unitPrice"
                             />
+
+                            <Form.Control
+                              style={{ marginTop: "30px" }}
+                              type="number"
+                              readOnly
+                              value={filteredPlan.discount}
+                              name="discount"
+                            />
+
+                            <Form.HelpText>
+                              This is the discout according to the selected
+                              sales plan.
+                            </Form.HelpText>
+
+                            <Form.Control
+                              style={{ marginTop: "10px" }}
+                              type="number"
+                              readOnly
+                              value={filteredPlan.tax_rate}
+                              name="taxRate"
+                            />
+
+                            <Form.HelpText>
+                              This is the tax rate according to the selected
+                              sales plan.
+                            </Form.HelpText>
+
+                            <Form.Group style={{ marginTop: "20px" }}>
+                              <Form.ControlLabel>
+                                Quantity to purchase (liters, kgs etc)
+                              </Form.ControlLabel>
+                              <Form.Control
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                              />
+                            </Form.Group>
                           </Form.Group>
+
+                          <Form.Group>
+                            <Form.ControlLabel>
+                              Total Payable Amount
+                            </Form.ControlLabel>
+                            <Form.Control
+                              type="number"
+                              name="total"
+                              value={formData.total}
+                              readOnly
+                            />
+                          </Form.Group>
+
+                          <ButtonToolbar>
+                            <Button type="submit" appearance="primary">
+                              Save
+                            </Button>
+                          </ButtonToolbar>
                         </Form>
                       </div>
                     ) : (
