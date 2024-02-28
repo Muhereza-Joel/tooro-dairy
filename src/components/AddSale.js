@@ -39,8 +39,8 @@ const AddSale = (props) => {
   });
 
   const [formData, setFormData] = useState({
-    quantity: "",
-    unitPrice: "",
+    quantity: 0,
+    unitPrice: 0,
     discountAmount: 0,
     taxAmount: 0,
     total: 0,
@@ -103,28 +103,29 @@ const AddSale = (props) => {
 
   const handleFormChange = (formValue) => {
     const { quantity } = formValue;
-  
+
     if (selectedProduct && selectedProduct.selling_price && filteredPlan) {
       const total = selectedProduct.selling_price * quantity;
       const discount = filteredPlan.discount;
       const taxRate = filteredPlan.tax_rate;
-  
+
       // Calculate discounted amount
       const discountedAmount = (total * discount) / 100;
-  
+
       // Calculate tax amount
       const taxAmount = (total * taxRate) / 100;
-  
+
       // Calculate final total amount after discount and tax
-      const finalTotal = total - discountedAmount + taxAmount;
-  
+      const finalTotal = total - (discountedAmount + taxAmount);
+
       setFormData({
         ...formValue,
         total: finalTotal,
+        discountAmount: discountedAmount,
+        taxAmount: taxAmount,
       });
     }
   };
-  
 
   const handleProductChange = (value) => {
     const selected = products.find((product) => product.id === value);
@@ -135,7 +136,7 @@ const AddSale = (props) => {
       discountAmount: 0,
       taxAmount: 0,
       total: 0,
-    })
+    });
   };
 
   const handleSearchForm = (formValue) => {
@@ -186,7 +187,58 @@ const AddSale = (props) => {
       discountAmount: 0,
       taxAmount: 0,
       total: 0,
-    })
+    });
+  };
+
+  const handleFormSubmit = async () => {
+    try {
+      const { id: userId } = userData;
+      const productId = selectedProduct ? selectedProduct.id : null;
+
+      const requestBody = {
+        ...formData,
+        salesPlan: selectedSalesPlan,
+        userId: userId,
+        productId: productId,
+        unitPrice: selectedProduct.selling_price,
+      };
+
+      const response = await fetch(
+        "http://localhost:3002/tdmis/api/v1/sales/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other headers if needed
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (response.ok) {
+        const responseData = await response.json();
+        toast.success("Sale record saved successfully...", {
+          style: { backgroundColor: "#cce6e8", color: "#333" },
+        });
+
+        setFormData({
+          quantity: 0,
+          unitPrice: 0,
+          discountAmount: 0,
+          taxAmount: 0,
+          total: 0,
+        });
+
+        setSelectedSalesPlan(null);
+        setUserData(null);
+        setSearchData({ searchTerm: "" });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to connect to the server...", {
+        style: { backgroundColor: "#fcd0d0", color: "#333" },
+      });
+    }
   };
 
   const avatorStyle = {
@@ -372,6 +424,7 @@ const AddSale = (props) => {
                         <Form
                           fluid
                           onChange={handleFormChange}
+                          onSubmit={handleFormSubmit}
                           formValue={formData}
                         >
                           <Form.Group>
@@ -381,7 +434,11 @@ const AddSale = (props) => {
                             <Form.Control
                               type="number"
                               readOnly
-                              value={selectedProduct ? selectedProduct.selling_price || 0 : 0}
+                              value={
+                                selectedProduct
+                                  ? selectedProduct.selling_price || 0
+                                  : 0
+                              }
                               name="unitPrice"
                             />
 
