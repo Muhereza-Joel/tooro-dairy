@@ -418,8 +418,7 @@ const AddStock = (props) => {
                             <Form.Control
                               type="number"
                               readOnly
-                              value={selectedProduct.buying_price}
-                              name="unitPrice"
+                              value={selectedProduct ?  selectedProduct.buying_price || 0 : 0}
                             />
                           </Form.Group>
 
