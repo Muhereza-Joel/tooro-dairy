@@ -14,6 +14,8 @@ import AddStock from './components/AddStock';
 import ManageSales from './components/ManageSales';
 import AddSale from './components/AddSale';
 import ViewSales from './components/ViewSales';
+import SalesReports from './components/SalesReports';
+import StockReports from './components/StockReports';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
@@ -45,10 +47,12 @@ function App() {
             <Route path='/dashboard/stock' element={<ViewCollections theme={theme} onChangeTheme={toggleTheme} />}/>
             <Route path='/dashboard/stock/add' element={<AddStock theme={theme} onChangeTheme={toggleTheme} />}/>
             <Route path='/dashboard/stock/manage' element={<ManageStock theme={theme} onChangeTheme={toggleTheme} />}/>
+            <Route path='/dashboard/stock/reports' element={<StockReports theme={theme} onChangeTheme={toggleTheme} />}/>
 
             <Route path='/dashboard/sales' element={<ViewSales theme={theme} onChangeTheme={toggleTheme} />}/>
             <Route path='/dashboard/sales/add' element={<AddSale theme={theme} onChangeTheme={toggleTheme} />}/>
             <Route path='/dashboard/sales/manage' element={<ManageSales theme={theme} onChangeTheme={toggleTheme} />}/>
+            <Route path='/dashboard/sales/reports' element={<SalesReports theme={theme} onChangeTheme={toggleTheme} />}/>
 
 
           </Routes>

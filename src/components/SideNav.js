@@ -151,6 +151,35 @@ const SideNav = (props) => {
 
             )}
 
+            {(isAdmin || isUser) && (
+              <Nav.Menu
+              eventKey="5"
+              title="Report Management"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="5-1"
+                onClick={() => {
+                  navigate("/dashboard/sales/reports");
+                }}
+              >
+                Sales Reports
+              </Nav.Item>
+              <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item>
+
+              
+
+            </Nav.Menu>
+
+            )}
+
           </Nav>
           <IconButton
             icon={props.theme === "light" ? "Toggle Theme" : "Toggle Theme"}
