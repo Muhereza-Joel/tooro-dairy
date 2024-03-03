@@ -89,6 +89,7 @@ const TopBar = (props) => {
               <Dropdown.Item>Settings</Dropdown.Item>
               <Dropdown.Item
                 onClick={() => {
+                  Cookies.remove("tdmis");
                   navigate("/auth/login");
                 }}
               >

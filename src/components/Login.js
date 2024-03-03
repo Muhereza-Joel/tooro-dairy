@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { Form, Schema, Button } from "rsuite";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
+import { isAuthenticated, login } from "../auth"
 
 const emailRule = Schema.Types.StringType()
   .isEmail("Please enter a valid email address.")
@@ -29,31 +29,9 @@ const Login = () => {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3002/tdmis/api/v1/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const authenticationResult = await login(formData.email, formData.password);
 
-      const data = await response.json();
-
-      if (data.success) {
-        // Save user data to cookie upon successful login
-        Cookies.set(
-          "tdmis",
-          JSON.stringify({
-            username: data.username,
-            id: data.id,
-            role: data.role,
-            email: data.email,
-            password: data.password,
-          })
-        );
+      if (authenticationResult.success) {
 
         toast.success("Aunthentication Successfull...", {
           style: { backgroundColor: "#cce6e8", color: "#333" },
