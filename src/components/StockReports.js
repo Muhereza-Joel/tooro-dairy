@@ -27,7 +27,7 @@ import {
 } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
-const salesPlanPickerData = ["daily", "weekly", "monthly", "custom"].map(
+const salesPlanPickerData = ["daily", "weekly", "monthly"].map(
   (item) => ({
     label: item,
     value: item,
@@ -154,7 +154,7 @@ const StockReports = (props) => {
                   </Form>
                 </Col>
                 <Col xs={3}>
-                  Filter by sales plan{" "}
+                  Filter by stock plan{" "}
                   <Stack
                     spacing={10}
                     direction="column"
