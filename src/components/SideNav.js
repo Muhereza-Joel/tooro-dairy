@@ -134,6 +134,14 @@ const SideNav = (props) => {
               >
                 View Sales
               </Nav.Item>
+              <Nav.Item
+                eventKey="4-3"
+                onClick={() => {
+                  navigate("/dashboard/sales/subscriptions/add/");
+                }}
+              >
+                Manage Subscriptions
+              </Nav.Item>
 
               {isAdmin && (
               <Nav.Item

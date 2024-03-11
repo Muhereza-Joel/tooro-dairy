@@ -23,6 +23,7 @@ import AddSale from "./components/AddSale";
 import ViewSales from "./components/ViewSales";
 import SalesReports from "./components/SalesReports";
 import StockReports from "./components/StockReports";
+import Subscriptions from "./components/Subscriptions";
 
 const PrivateRoute = ({ element, path }) => {
   return isAuthenticated() ? (
@@ -168,6 +169,16 @@ const App = () => {
                   <PrivateRoute
                     element={
                       <ManageSales theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/dashboard/sales/subscriptions/add/"
+                element={
+                  <PrivateRoute
+                    element={
+                      <Subscriptions theme={theme} onChangeTheme={toggleTheme} />
                     }
                   />
                 }
