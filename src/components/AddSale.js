@@ -20,14 +20,17 @@ import {
   RadioTile,
   Divider,
   SelectPicker,
+  Message
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
 import Avator from "../assets/images/avator.jpg";
+import SubscriptionDetails from "./subscriptionDetails";
 
 const AddSale = (props) => {
   const [step, setStep] = useState(0);
   const [userData, setUserData] = useState(null);
+  const [subscriptionPlan, setSubscriptionPlan] = useState(null);
   const [selectedSalesPlan, setSelectedSalesPlan] = useState(null);
   const [plans, setPlans] = useState([]);
   const [filteredPlan, setFilteredPlan] = useState(null);
@@ -145,6 +148,8 @@ const AddSale = (props) => {
 
   const handleSearchSubmit = async () => {
     try {
+      setSubscriptionPlan(null);
+
       const response = await fetch(
         `http://localhost:3002/tdmis/api/v1/auth/profile?username=${searchData.searchTerm}`
       );
@@ -153,6 +158,7 @@ const AddSale = (props) => {
         const profileData = await response.json();
         if (Array.isArray(profileData) && profileData.length > 0) {
           setUserData(profileData[0]);
+          fetchSubscriptionData(profileData[0].id);
           setStep(1);
         } else {
           toast.error("Failed to get user data...", {
@@ -169,6 +175,26 @@ const AddSale = (props) => {
       toast.error("Failed to connect to the server...", {
         style: { backgroundColor: "#fcd0d0", color: "#333" },
       });
+      console.error(error);
+    }
+  };
+
+  const fetchSubscriptionData = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/tdmis/api/v1/sales/subscriptions/subscription/${id}`
+      );
+
+      if (response.ok) {
+        const subscription = await response.json();
+        setSubscriptionPlan(subscription);
+      } else {
+        toast.error("No subscription plan found for the user...", {
+          style: { backgroundColor: "#fcd0d0", color: "#333" },
+        });
+      }
+    } catch (error) {
+      
       console.error(error);
     }
   };
@@ -353,13 +379,25 @@ const AddSale = (props) => {
                           value={userData.phone_number}
                           style={{ marginBottom: "10px" }}
                         />
+
+                        {subscriptionPlan ? (
+                          <SubscriptionDetails
+                            subscriptionPlan={subscriptionPlan}
+                          />
+                        ) : (
+                          <>
+                            <Message type="info" style={{ marginTop: "10px" }}>
+                              No subscription plan found for this user.
+                            </Message>
+                          </>
+                        )}
                       </div>
                     )}
                   </Panel>
                 </Col>
                 <Col md={8} sm={8} lg={8}>
                   <Panel bordered>
-                    {userData != null ? (
+                    {subscriptionPlan != null ? (
                       <RadioTileGroup
                         name="salesPlan"
                         aria-label="Stock Plans"
