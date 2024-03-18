@@ -14,6 +14,10 @@ const TopBar = (props) => {
     ? JSON.parse(Cookies.get("tdmis")).username
     : null;
 
+  const profileCreated = Cookies.get("tdmis")
+    ? JSON.parse(Cookies.get("tdmis")).profileCreated
+    : null;
+
   const avatorStyle = {
     width: "150px",
     height: "150px",
@@ -75,14 +79,20 @@ const TopBar = (props) => {
                 <p>Signed in as</p>
                 <strong>{username}</strong>
               </Dropdown.Item>
-              <Dropdown.Separator />
-              <Dropdown.Item
-                onClick={() => {
-                  navigate("/dashboard/users/my-profile");
-                }}
-              >
-                My profile
-              </Dropdown.Item>
+
+              { profileCreated == 1 && (
+                <div>
+                <Dropdown.Separator />
+                <Dropdown.Item
+                  onClick={() => {
+                    navigate("/dashboard/users/my-profile");
+                  }}
+                >
+                  My profile
+                </Dropdown.Item>
+                </div>
+
+              )}
 
               <Dropdown.Separator />
               <Dropdown.Item>Help</Dropdown.Item>

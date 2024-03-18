@@ -24,6 +24,7 @@ import ViewSales from "./components/ViewSales";
 import SalesReports from "./components/SalesReports";
 import StockReports from "./components/StockReports";
 import Subscriptions from "./components/Subscriptions";
+import CreateProfile from "./components/CreateProfile";
 
 const PrivateRoute = ({ element, path }) => {
   return isAuthenticated() ? (
@@ -94,6 +95,17 @@ const App = () => {
                   <PrivateRoute
                     element={
                       <Profile theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+
+              <Route
+                path="/dashboard/users/create-profile"
+                element={
+                  <PrivateRoute
+                    element={
+                      <CreateProfile theme={theme} onChangeTheme={toggleTheme} />
                     }
                   />
                 }

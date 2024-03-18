@@ -32,9 +32,10 @@ const login = async (email, password) => {
           role: result.role,
           email: result.email,
           password: result.password,
+          profileCreated: result.profileCreated,
         })
       );
-      return { success: true, username: result.username };
+      return { success: true, username: result.username, profileCreated: result.profileCreated };
     } else {
       return { success: false, username: null };
       

@@ -36,7 +36,12 @@ const Login = () => {
         toast.success("Aunthentication Successfull...", {
           style: { backgroundColor: "#cce6e8", color: "#333" },
         });
-        navigate("/dashboard");
+
+        if(authenticationResult.profileCreated){
+          navigate("/dashboard");
+        }else{
+          navigate("/dashboard/users/create-profile")
+        }
       } else {
         toast.error("Aunthentication failed, Please try again...", {
           style: { backgroundColor: "#fcd0d0", color: "#333" },
