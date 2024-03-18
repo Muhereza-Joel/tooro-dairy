@@ -116,14 +116,16 @@ const Subscriptions = (props) => {
       const startDateObj = new Date(startDate);
       startDateObj.setDate(startDateObj.getDate() + daysToAdd);
       endDate = startDateObj.toISOString().split("T")[0];
+      const formattedStartDate = startDateObj.toISOString().split("T")[0];
+
+      setFormData({
+        ...formValue,
+        startDate: formattedStartDate,
+        endDate: endDate,
+      });
     }
     
 
-    setFormData({
-      ...formValue,
-      startDate: startDate,
-      endDate: endDate,
-    });
 
     if (selectedProduct && selectedProduct.selling_price && filteredPlan) {
       // Calculate the total based on quantity and sales plan
@@ -457,14 +459,15 @@ const Subscriptions = (props) => {
                                 <DatePicker
                                   name="startDate"
                                   style={{ width: 150 }}
-                                  value={formData.startDate}
+                                  
                                   onChange={(value) =>
                                     handleFormChange({
                                       ...formData,
                                       startDate: value,
                                     })
                                   }
-                                  disabledDate={(date) => date < maxStartDate}
+                                  shouldDisableDate={(date) => date < maxStartDate}
+                                  format="yyyy-dd-MM"
                                 />
                               </Form.Group>
                             </Col>
