@@ -397,7 +397,7 @@ const AddSale = (props) => {
                 </Col>
                 <Col md={8} sm={8} lg={8}>
                   <Panel bordered>
-                    {subscriptionPlan != null ? (
+                    {userData != null ? (
                       <RadioTileGroup
                         name="salesPlan"
                         aria-label="Stock Plans"
