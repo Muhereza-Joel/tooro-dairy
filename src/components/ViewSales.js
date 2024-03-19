@@ -319,11 +319,11 @@ const ViewSales = (props) => {
                     <Cell dataKey="fullname" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
-                  <Column width={150}>
+                  <Column width={100}>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
-                      Phone Number
+                      Phone
                     </HeaderCell>
                     <Cell
                       dataKey="phone_number"
@@ -331,11 +331,11 @@ const ViewSales = (props) => {
                     />
                   </Column>
 
-                  <Column width={170} sortable>
+                  <Column width={100} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
-                      Product Name
+                      Product
                     </HeaderCell>
                     <Cell
                       dataKey="product_name"
@@ -351,6 +351,7 @@ const ViewSales = (props) => {
                     </HeaderCell>
                     <Cell dataKey="unit_price" style={{ fontSize: "1.0rem" }} />
                   </Column>
+
                   <Column width={120} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
@@ -358,6 +359,15 @@ const ViewSales = (props) => {
                       Quantity
                     </HeaderCell>
                     <Cell dataKey="quantity" style={{ fontSize: "1.0rem" }} />
+                  </Column>
+
+                  <Column width={120} sortable>
+                    <HeaderCell
+                      style={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                    >
+                      Total
+                    </HeaderCell>
+                    <Cell dataKey="total" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
                   <Column width={130} sortable>

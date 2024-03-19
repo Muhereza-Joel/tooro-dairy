@@ -54,31 +54,6 @@ const Login = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const userCookie = Cookies.get("tdmis");
-
-  //   if (userCookie) {
-  //     try {
-  //       const userDataFromCookie = JSON.parse(userCookie);
-  //       setFormData(prevState => ({
-  //         ...prevState,
-  //         email: userDataFromCookie.email,
-  //         password: userDataFromCookie.password,
-  //       }));
-  //       // Check if the parsed data is an object
-  //       if (typeof userDataFromCookie === "object") {
-
-  //       } else {
-
-  //         console.error("Invalid user data format in the cookie");
-  //       }
-  //     } catch (error) {
-
-  //       console.error("Error parsing JSON from the cookie:", error);
-  //     }
-  //   }
-  // }, [])
-
   return (
     <div
       style={{

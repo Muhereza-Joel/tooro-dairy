@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CustomProvider, Container } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+
 import {
   Route,
   BrowserRouter as Router,
@@ -49,6 +50,7 @@ const App = () => {
   };
 
   return (
+    
     <CustomProvider theme={theme}>
       <Container className="app">
         <Router>

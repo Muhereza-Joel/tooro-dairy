@@ -3,6 +3,7 @@ import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import Avator from "../assets/images/avator.jpg";
 import {
   Container,
   Content,
@@ -452,7 +453,7 @@ const ViewCollections = (props) => {
                         <Row className="show-grid">
                           <Col xs={12}>
                             <img
-                              src={collectionToView.url}
+                              src={collectionToView.url || Avator}
                               width={200}
                               height={200}
                               style={{

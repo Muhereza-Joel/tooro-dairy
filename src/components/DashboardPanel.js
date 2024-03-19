@@ -1,9 +1,16 @@
-import { Panel, Placeholder } from 'rsuite';
+import React from 'react';
+import { Message, Panel, Placeholder } from 'rsuite';
 
-const DashboardBox = () => (
-  <Panel header="Panel title" shaded bordered>
-    <Placeholder.Paragraph />
-    <h3>Test</h3>
+const DashboardBox = (props) => (
+  <Panel header={props.title} bordered style={{ backgroundColor: props.backgroundColor }}>
+    {!props.data ? (
+      <Placeholder.Paragraph active />
+    ) : (
+      <Message type="warning">
+        <span>{props.currency}</span>
+        <h3>{props.data}</h3>
+      </Message>
+    )}
   </Panel>
 );
 

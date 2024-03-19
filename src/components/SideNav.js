@@ -173,14 +173,14 @@ const SideNav = (props) => {
               >
                 Sales Reports
               </Nav.Item>
-              <Nav.Item
+              {/* <Nav.Item
                 eventKey="5-2"
                 onClick={() => {
                   navigate("/dashboard/stock/reports");
                 }}
               >
                 Stock Reports
-              </Nav.Item>
+              </Nav.Item> */}
 
               
 
