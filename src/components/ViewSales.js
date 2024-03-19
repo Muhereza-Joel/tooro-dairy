@@ -172,16 +172,17 @@ const ViewSales = (props) => {
     handleSearch(""); // Trigger search when selectedFilter or selectedStatus changes
   }, [selectedFilter]);
 
+  
   const handleSearch = (value) => {
     // Use originalData for searching
     const filteredData = originalData.filter((item) => {
       const includesValue = Object.values(item).some((val) =>
-        val.toString().toLowerCase().includes(value.toLowerCase())
+        val && val.toString().toLowerCase().includes(value.toLowerCase())
       );
-
+  
       const filterCondition =
         selectedFilter && item.sales_plan === selectedFilter;
-
+  
       // Combine filter, stock_plan, status, and search conditions
       return (
         (includesValue && filterCondition) ||
@@ -190,9 +191,10 @@ const ViewSales = (props) => {
         (!selectedFilter && includesValue)
       );
     });
-
+  
     setData(filteredData);
   };
+  
 
   const handleDeleteSubmit = async () => {
     try {

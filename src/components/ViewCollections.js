@@ -179,8 +179,10 @@ const ViewCollections = (props) => {
   const handleSearch = (value) => {
     // Use originalData for searching
     const filteredData = originalData.filter((item) => {
-      const includesValue = Object.values(item).some((val) =>
-        val.toString().toLowerCase().includes(value.toLowerCase())
+      const includesValue = Object.values(item).some(
+        (val) =>
+          val &&
+          val.toString().toLowerCase().includes(value.toLowerCase())
       );
   
       const filterCondition = selectedFilter && item.stock_plan === selectedFilter;
@@ -197,6 +199,7 @@ const ViewCollections = (props) => {
   
     setData(filteredData);
   };
+  
   
   
 
