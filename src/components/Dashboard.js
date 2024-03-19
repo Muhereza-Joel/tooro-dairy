@@ -143,7 +143,7 @@ const Dashboard = (props) => {
                       />
                     </Col>
                     <Col xs={24} sm={24} md={24} style={{ marginBottom: 0 }}>
-                      <Panel shaded bordered header="Panel">
+                      <Panel shaded bordered header="Sales made this month">
                         <SalesGraph />
                       </Panel>
                     </Col>

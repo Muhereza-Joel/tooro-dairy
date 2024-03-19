@@ -24,6 +24,7 @@ import {
   useMediaQuery,
   Divider,
   Placeholder,
+  Button,
 } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
@@ -51,7 +52,6 @@ const SalesReports = (props) => {
     "http://localhost:3002/tdmis/api/v1/sales/reports/daily"
   );
 
-  const handleSearch = (value) => {};
 
   useEffect(() => {
     // Fetch data when fetchEndpoint changes
@@ -191,7 +191,7 @@ const SalesReports = (props) => {
       setLoading(false);
       setSortColumn(sortColumn);
       setSortType(sortType);
-      handleSearch(""); // Reset search when sorting
+      
     }, 500);
   };
 
@@ -268,15 +268,6 @@ const SalesReports = (props) => {
               </Row>
               <Divider />
               <Row className="show-grid">
-                <Col xs={6}>
-                  Dynamically Generate reports using filters{" "}
-                  <Form>
-                    <Form.Control
-                      placeholder="Search..."
-                      onChange={handleSearch}
-                    />
-                  </Form>
-                </Col>
                 <Col xs={3}>
                   Filter by sales plan{" "}
                   <Stack
@@ -317,7 +308,10 @@ const SalesReports = (props) => {
                         direction="column"
                         alignItems="flex-start"
                       >
-                        <DatePicker style={{ width: 150 }} />
+                        <DatePicker
+                          style={{ width: 150 }}
+                          onChange={handleStartDateChange}
+                        />
                       </Stack>
                     </Col>
                     <Col xs={3}>
@@ -327,11 +321,19 @@ const SalesReports = (props) => {
                         direction="column"
                         alignItems="flex-start"
                       >
-                        <DatePicker style={{ width: 150 }} />
+                        <DatePicker
+                          style={{ width: 150 }}
+                          onChange={handleEndDateChange}
+                        />
                       </Stack>
                     </Col>
                   </>
                 )}
+                <Col xs={3}>
+                  <Button style={{ marginTop: "20px" }}onClick={fetchData}>
+                    Search Database
+                  </Button>
+                </Col>
               </Row>
               <div>
                 {salesData.length == 0 ? (
