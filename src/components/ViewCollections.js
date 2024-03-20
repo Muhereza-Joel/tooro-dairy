@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import Avator from "../assets/images/avator.jpg";
+
 import {
   Container,
   Content,
@@ -27,6 +28,8 @@ import {
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
+import SalesPDFModal from "./SalesPDFModal";
+import StockPDFGenerator from "./StockPDFGenerator";
 
 const selectPickerData = ["daily", "weekly", "monthly"].map((item) => ({
   label: item,
@@ -53,10 +56,24 @@ const ViewCollections = (props) => {
     role: "",
   });
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openPdfModal, setOpenPdfModal] = useState(false);
   const [collectionToView, setCollectionToView] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const [pdfData, setPdfData] = useState(null);
+
+  const handleGeneratePDF = () => {
+    try {
+      const pdfDoc = <StockPDFGenerator data={data} />;
+
+      setPdfData(pdfDoc);
+      setOpenPdfModal(true);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   const handleOpen = (collectionId) => {
     setOpen(true);
@@ -214,29 +231,32 @@ const ViewCollections = (props) => {
           method: "PUT",
         }
       );
-  
+
       if (response.ok) {
         const updatedData = data.map((item) => {
           if (item.id === id) {
             return {
               ...item,
-              status: "paid", 
+              status: "paid",
               balance: 0,
-              amount_paid: 0, 
+              amount_paid: 0,
             };
           }
           return item;
         });
-  
+
         setData(updatedData);
         setOpen(false);
         toast.success("Collection marked as paid successfully.", {
           style: { backgroundColor: "#66ff66", color: "#333" },
         });
       } else {
-        toast.error("Error marking collection as paid. Please try again later.", {
-          style: { backgroundColor: "#ff6666", color: "#333" },
-        });
+        toast.error(
+          "Error marking collection as paid. Please try again later.",
+          {
+            style: { backgroundColor: "#ff6666", color: "#333" },
+          }
+        );
       }
     } catch (error) {
       toast.error("An error occurred. Please try again later.", {
@@ -244,7 +264,6 @@ const ViewCollections = (props) => {
       });
     }
   };
-  
 
   const handleDeleteSubmit = async () => {
     try {
@@ -344,7 +363,9 @@ const ViewCollections = (props) => {
                 </Col>
                 <Col xs={8} style={{ marginTop: "1.2rem" }}>
                   <ButtonGroup>
-                    <Button>Export To Pdf</Button>
+                    <Button onClick={() => handleGeneratePDF()}>
+                      Export To Pdf
+                    </Button>
                     <Button>Export To CSV</Button>
                     <Button>Export To Excel</Button>
                   </ButtonGroup>
@@ -589,7 +610,13 @@ const ViewCollections = (props) => {
                   Hide
                 </Button>
 
-                { (isAdmin || isUser) && <Button onClick={() => markCollectionAsPaid(editingCollectionId)}>Mark As Paid</Button>}
+                {(isAdmin || isUser) && (
+                  <Button
+                    onClick={() => markCollectionAsPaid(editingCollectionId)}
+                  >
+                    Mark As Paid
+                  </Button>
+                )}
 
                 {isAdmin && (
                   <Button
@@ -634,6 +661,13 @@ const ViewCollections = (props) => {
                 </Button>
               </Modal.Footer>
             </Modal>
+
+            <SalesPDFModal
+              openPdfModal={openPdfModal}
+              pdfData={pdfData}
+              onClose={() => setOpenPdfModal(false)}
+            />
+
             <ToastContainer
               position="bottom-left"
               autoClose={3000}
