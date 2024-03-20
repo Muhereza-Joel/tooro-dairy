@@ -43,6 +43,7 @@ const SalesReports = (props) => {
   const [products, setProducts] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
+  const [selectKey, setSelectKey] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState({});
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
@@ -56,66 +57,46 @@ const SalesReports = (props) => {
   useEffect(() => {
     // Fetch data when fetchEndpoint changes
     fetchData();
-  }, [fetchEndpoint]);
+  }, [selectKey]);
 
-  const updateFetchEndpoint = (value) => {
+  const updateFetchEndpoint = (value, salesPlan, productName, startDate, endDate) => {
     const baseUrl = "http://localhost:3002/tdmis/api/v1/sales/reports";
-
+    let newEndpoint = baseUrl;
+  
     switch (value) {
       case "daily":
-        setFetchEndpoint((prevEndpoint) => {
-          const newEndpoint = `${baseUrl}/daily`;
-          const queryString = buildQueryString();
-          return queryString ? `${newEndpoint}?${queryString}` : newEndpoint;
-        });
+        newEndpoint += "/daily";
         break;
       case "weekly":
-        setFetchEndpoint((prevEndpoint) => {
-          const newEndpoint = `${baseUrl}/weekly`;
-          const queryString = buildQueryString();
-          return queryString ? `${newEndpoint}?${queryString}` : newEndpoint;
-        });
+        newEndpoint += "/weekly";
         break;
       case "monthly":
-        setFetchEndpoint((prevEndpoint) => {
-          const newEndpoint = `${baseUrl}/monthly`;
-          const queryString = buildQueryString();
-          return queryString ? `${newEndpoint}?${queryString}` : newEndpoint;
-        });
+        newEndpoint += "/monthly";
         break;
       case "custom":
-        setFetchEndpoint((prevEndpoint) => {
-          const newEndpoint = `${baseUrl}/custom`;
-          const queryString = buildQueryString();
-          return queryString ? `${newEndpoint}?${queryString}` : newEndpoint;
-        });
+        newEndpoint += "/custom";
         break;
       default:
-        setFetchEndpoint((prevEndpoint) => {
-          const newEndpoint = `${baseUrl}/daily`;
-          const queryString = buildQueryString();
-          return queryString ? `${newEndpoint}?${queryString}` : newEndpoint;
-        });
+        newEndpoint += "/daily";
         break;
     }
+  
+    const queryString = buildQueryString(salesPlan, productName, startDate, endDate);
+    setFetchEndpoint(queryString ? `${newEndpoint}?${queryString}` : newEndpoint);
   };
-
-  const buildQueryString = () => {
+  
+  const buildQueryString = (salesPlan, productName, startDate, endDate) => {
     const queryParams = new URLSearchParams();
-    if (selectedSalesPlan) queryParams.set("salesPlan", selectedSalesPlan);
-    if (selectedProductName)
-      queryParams.set("productName", selectedProductName);
+    if (salesPlan) queryParams.set("salesPlan", salesPlan);
+    if (productName) queryParams.set("productName", productName);
     if (startDate) queryParams.set("startDate", startDate);
     if (endDate) queryParams.set("endDate", endDate);
-
+  
     return queryParams.toString();
   };
+  
 
-  const handleTileChange = (value) => {
-    setSelectedTile(value);
-    updateFetchEndpoint(value);
-  };
-
+  
   const fetchData = async () => {
     try {
       const response = await fetch(fetchEndpoint);
@@ -200,27 +181,42 @@ const SalesReports = (props) => {
     value: item.product_name,
   }));
 
+  const handleTileChange = (value) => {
+    setSelectedTile(value);
+    updateFetchEndpoint(value, selectedSalesPlan, selectedProductName, startDate, endDate);
+    setSelectKey((prevKey) => prevKey + 1);
+    // setSelectedSalesPlan(null);
+    // setSelectedProductName(null);
+    // setStartDate(null);
+    // setEndDate(null);
+  };
+  
+  const handlePlanChange = (value) => {
+    setSelectedSalesPlan(value);
+    updateFetchEndpoint(selectedTile, value, selectedProductName, startDate, endDate);
+  };
+  
   const handleProductChange = (value) => {
     const selected = products.find((product) => product.product_name === value);
     setSelectedProduct(selected);
     setSelectedProductName(selected != null ? selected.product_name : "");
-    updateFetchEndpoint(selectedTile);
+    updateFetchEndpoint(selectedTile, selectedSalesPlan, value, startDate, endDate);
   };
-
-  const handlePlanChange = (value) => {
-    setSelectedSalesPlan(value);
-    updateFetchEndpoint(selectedTile);
-  };
-
+  
   const handleStartDateChange = (value) => {
-    setStartDate(value);
-    updateFetchEndpoint();
+    const startDateObj = new Date(value);
+    let startDate = startDateObj.toISOString().split("T")[0];
+    setStartDate(startDate);
+    updateFetchEndpoint(selectedTile, selectedSalesPlan, selectedProductName, startDate, endDate);
   };
-
+  
   const handleEndDateChange = (value) => {
-    setEndDate(value);
-    updateFetchEndpoint();
+    const endDateObj = new Date(value);
+    let endDate = endDateObj.toISOString().split("T")[0];
+    setEndDate(endDate);
+    updateFetchEndpoint(selectedTile, selectedSalesPlan, selectedProductName, startDate, endDate);
   };
+  
 
   return (
     <div>

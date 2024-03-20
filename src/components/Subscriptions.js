@@ -21,6 +21,7 @@ import {
   Divider,
   SelectPicker,
   DatePicker,
+  Message,
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
@@ -124,8 +125,6 @@ const Subscriptions = (props) => {
         endDate: endDate,
       });
     }
-    
-
 
     if (selectedProduct && selectedProduct.selling_price && filteredPlan) {
       // Calculate the total based on quantity and sales plan
@@ -309,6 +308,19 @@ const Subscriptions = (props) => {
             style={{ height: "90vh", padding: "0px 20px", overflow: "auto" }}
           >
             <Grid fluid>
+              <Message
+                showIcon
+                type="warning"
+                header="Warning"
+                style={{ marginBottom: "30px" }}
+              >
+                <strong>
+                  Please make sure to set the subscription plan for a user when
+                  his current plan has ended, because setting a new plan will
+                  close all running plans for the user.
+                </strong>
+              </Message>
+
               <Steps current={step} style={{ margin: "10px 0px 50px" }}>
                 <Steps.Item title="Search Customer" />
                 <Steps.Item title="Select Sale Plan" />
@@ -459,14 +471,15 @@ const Subscriptions = (props) => {
                                 <DatePicker
                                   name="startDate"
                                   style={{ width: 150 }}
-                                  
                                   onChange={(value) =>
                                     handleFormChange({
                                       ...formData,
                                       startDate: value,
                                     })
                                   }
-                                  shouldDisableDate={(date) => date < maxStartDate}
+                                  shouldDisableDate={(date) =>
+                                    date < maxStartDate
+                                  }
                                   format="yyyy-dd-MM"
                                 />
                               </Form.Group>

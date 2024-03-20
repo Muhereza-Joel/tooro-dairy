@@ -106,6 +106,7 @@ const ViewCollections = (props) => {
   }, []);
 
   const isAdmin = role === "administrator";
+  const isUser = role === "user";
 
   const handleDelete = (collectionId) => {
     setEditingCollectionId(collectionId);
@@ -174,33 +175,75 @@ const ViewCollections = (props) => {
   useEffect(() => {
     handleSearch(""); // Trigger search when selectedFilter or selectedStatus changes
   }, [selectedFilter, selectedStatus]);
-  
 
   const handleSearch = (value) => {
     // Use originalData for searching
     const filteredData = originalData.filter((item) => {
       const includesValue = Object.values(item).some(
         (val) =>
-          val &&
-          val.toString().toLowerCase().includes(value.toLowerCase())
+          val && val.toString().toLowerCase().includes(value.toLowerCase())
       );
-  
-      const filterCondition = selectedFilter && item.stock_plan === selectedFilter;
+
+      const filterCondition =
+        selectedFilter && item.stock_plan === selectedFilter;
       const statusCondition = selectedStatus && item.status === selectedStatus;
-  
+
       // Combine filter, stock_plan, status, and search conditions
       return (
         (includesValue && filterCondition && statusCondition) ||
-        (selectedFilter && !selectedStatus && includesValue && filterCondition) ||
-        (!selectedFilter && selectedStatus && includesValue && statusCondition) ||
+        (selectedFilter &&
+          !selectedStatus &&
+          includesValue &&
+          filterCondition) ||
+        (!selectedFilter &&
+          selectedStatus &&
+          includesValue &&
+          statusCondition) ||
         (!selectedFilter && !selectedStatus && includesValue)
       );
     });
-  
+
     setData(filteredData);
   };
+
+  const markCollectionAsPaid = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/tdmis/api/v1/stock/collections/mark-as-paid/${id}`,
+        {
+          method: "PUT",
+        }
+      );
   
+      if (response.ok) {
+        const updatedData = data.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              status: "paid", 
+              balance: 0,
+              amount_paid: 0, 
+            };
+          }
+          return item;
+        });
   
+        setData(updatedData);
+        setOpen(false);
+        toast.success("Collection marked as paid successfully.", {
+          style: { backgroundColor: "#66ff66", color: "#333" },
+        });
+      } else {
+        toast.error("Error marking collection as paid. Please try again later.", {
+          style: { backgroundColor: "#ff6666", color: "#333" },
+        });
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.", {
+        style: { backgroundColor: "#ff6666", color: "#333" },
+      });
+    }
+  };
   
 
   const handleDeleteSubmit = async () => {
@@ -545,6 +588,9 @@ const ViewCollections = (props) => {
                 <Button onClick={handleClose} appearance="primary">
                   Hide
                 </Button>
+
+                { (isAdmin || isUser) && <Button onClick={() => markCollectionAsPaid(editingCollectionId)}>Mark As Paid</Button>}
+
                 {isAdmin && (
                   <Button
                     color="red"
@@ -553,7 +599,6 @@ const ViewCollections = (props) => {
                   >
                     Delete Stock Record
                   </Button>
-
                 )}
                 <Button onClick={handleClose} appearance="subtle">
                   Cancel
