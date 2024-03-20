@@ -115,9 +115,10 @@ const Subscriptions = (props) => {
     if (startDate && filteredPlan) {
       const daysToAdd = filteredPlan.name === "weekly" ? 7 : 30;
       const startDateObj = new Date(startDate);
+      const startDateObj2 = new Date(startDate);
       startDateObj.setDate(startDateObj.getDate() + daysToAdd);
       endDate = startDateObj.toISOString().split("T")[0];
-      const formattedStartDate = startDateObj.toISOString().split("T")[0];
+      const formattedStartDate = startDateObj2.toISOString().split("T")[0];
 
       setFormData({
         ...formValue,
@@ -230,8 +231,8 @@ const Subscriptions = (props) => {
         userId: userId,
         productId: productId,
         unitPrice: selectedProduct.selling_price,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
+        // startDate: formData.startDate,
+        // endDate: formData.endDate,
       };
 
       const response = await fetch(
@@ -480,7 +481,7 @@ const Subscriptions = (props) => {
                                   shouldDisableDate={(date) =>
                                     date < maxStartDate
                                   }
-                                  format="yyyy-dd-MM"
+                                  format="yyyy-MM-dd"
                                 />
                               </Form.Group>
                             </Col>
