@@ -80,7 +80,7 @@ const SalesPDFGenerator = ({ data }) => {
               ))}
             </View>
             <View style={styles.columnHeader}>
-              <Text style={styles.columnHeaderText}>Quantity</Text>
+              <Text style={styles.columnHeaderText}>Quantity (litres, kgs, etc)</Text>
               {data.map((item, index) => (
                 <Text key={index} style={styles.cell}>
                   {item.quantity}
