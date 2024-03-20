@@ -26,6 +26,8 @@ import {
   Placeholder,
   Button,
 } from "rsuite";
+import SalesPDFModal from "./SalesPDFModal";
+import SalesPDFGenerator from "./SalesPDFGenerator";
 
 const { Column, HeaderCell, Cell } = Table;
 const salesPlanPickerData = ["daily", "weekly", "monthly"].map((item) => ({
@@ -53,16 +55,35 @@ const SalesReports = (props) => {
     "http://localhost:3002/tdmis/api/v1/sales/reports/daily"
   );
 
+  const [openPdfModal, setOpenPdfModal] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+
+  const handleGeneratePDF = () => {
+    try {
+      const pdfDoc = <SalesPDFGenerator data={salesData} />;
+
+      setPdfData(pdfDoc);
+      setOpenPdfModal(true);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   useEffect(() => {
     // Fetch data when fetchEndpoint changes
     fetchData();
   }, [selectKey]);
 
-  const updateFetchEndpoint = (value, salesPlan, productName, startDate, endDate) => {
+  const updateFetchEndpoint = (
+    value,
+    salesPlan,
+    productName,
+    startDate,
+    endDate
+  ) => {
     const baseUrl = "http://localhost:3002/tdmis/api/v1/sales/reports";
     let newEndpoint = baseUrl;
-  
+
     switch (value) {
       case "daily":
         newEndpoint += "/daily";
@@ -80,23 +101,28 @@ const SalesReports = (props) => {
         newEndpoint += "/daily";
         break;
     }
-  
-    const queryString = buildQueryString(salesPlan, productName, startDate, endDate);
-    setFetchEndpoint(queryString ? `${newEndpoint}?${queryString}` : newEndpoint);
+
+    const queryString = buildQueryString(
+      salesPlan,
+      productName,
+      startDate,
+      endDate
+    );
+    setFetchEndpoint(
+      queryString ? `${newEndpoint}?${queryString}` : newEndpoint
+    );
   };
-  
+
   const buildQueryString = (salesPlan, productName, startDate, endDate) => {
     const queryParams = new URLSearchParams();
     if (salesPlan) queryParams.set("salesPlan", salesPlan);
     if (productName) queryParams.set("productName", productName);
     if (startDate) queryParams.set("startDate", startDate);
     if (endDate) queryParams.set("endDate", endDate);
-  
+
     return queryParams.toString();
   };
-  
 
-  
   const fetchData = async () => {
     try {
       const response = await fetch(fetchEndpoint);
@@ -172,7 +198,6 @@ const SalesReports = (props) => {
       setLoading(false);
       setSortColumn(sortColumn);
       setSortType(sortType);
-      
     }, 500);
   };
 
@@ -183,40 +208,69 @@ const SalesReports = (props) => {
 
   const handleTileChange = (value) => {
     setSelectedTile(value);
-    updateFetchEndpoint(value, selectedSalesPlan, selectedProductName, startDate, endDate);
+    updateFetchEndpoint(
+      value,
+      selectedSalesPlan,
+      selectedProductName,
+      startDate,
+      endDate
+    );
     setSelectKey((prevKey) => prevKey + 1);
     // setSelectedSalesPlan(null);
     // setSelectedProductName(null);
     // setStartDate(null);
     // setEndDate(null);
   };
-  
+
   const handlePlanChange = (value) => {
     setSelectedSalesPlan(value);
-    updateFetchEndpoint(selectedTile, value, selectedProductName, startDate, endDate);
+    updateFetchEndpoint(
+      selectedTile,
+      value,
+      selectedProductName,
+      startDate,
+      endDate
+    );
   };
-  
+
   const handleProductChange = (value) => {
     const selected = products.find((product) => product.product_name === value);
     setSelectedProduct(selected);
     setSelectedProductName(selected != null ? selected.product_name : "");
-    updateFetchEndpoint(selectedTile, selectedSalesPlan, value, startDate, endDate);
+    updateFetchEndpoint(
+      selectedTile,
+      selectedSalesPlan,
+      value,
+      startDate,
+      endDate
+    );
   };
-  
+
   const handleStartDateChange = (value) => {
     const startDateObj = new Date(value);
     let startDate = startDateObj.toISOString().split("T")[0];
     setStartDate(startDate);
-    updateFetchEndpoint(selectedTile, selectedSalesPlan, selectedProductName, startDate, endDate);
+    updateFetchEndpoint(
+      selectedTile,
+      selectedSalesPlan,
+      selectedProductName,
+      startDate,
+      endDate
+    );
   };
-  
+
   const handleEndDateChange = (value) => {
     const endDateObj = new Date(value);
     let endDate = endDateObj.toISOString().split("T")[0];
     setEndDate(endDate);
-    updateFetchEndpoint(selectedTile, selectedSalesPlan, selectedProductName, startDate, endDate);
+    updateFetchEndpoint(
+      selectedTile,
+      selectedSalesPlan,
+      selectedProductName,
+      startDate,
+      endDate
+    );
   };
-  
 
   return (
     <div>
@@ -326,8 +380,13 @@ const SalesReports = (props) => {
                   </>
                 )}
                 <Col xs={3}>
-                  <Button style={{ marginTop: "20px" }}onClick={fetchData}>
+                  <Button style={{ marginTop: "20px" }} onClick={fetchData}>
                     Search Database
+                  </Button>
+                </Col>
+                <Col>
+                  <Button appearance="primary" onClick={() => handleGeneratePDF()} style={{marginTop: "20px"}}>
+                    Export To Pdf
                   </Button>
                 </Col>
               </Row>
@@ -439,6 +498,11 @@ const SalesReports = (props) => {
                 )}
               </div>
             </div>
+            <SalesPDFModal
+              openPdfModal={openPdfModal}
+              pdfData={pdfData}
+              onClose={() => setOpenPdfModal(false)}
+            />
           </Content>
         </Container>
       </Container>

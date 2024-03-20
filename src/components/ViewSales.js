@@ -27,6 +27,8 @@ import {
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
+import SalesPDFGenerator from "./SalesPDFGenerator";
+import SalesPDFModal from "./SalesPDFModal";
 
 const selectPickerData = ["daily", "weekly", "monthly"].map((item) => ({
   label: item,
@@ -56,6 +58,19 @@ const ViewSales = (props) => {
   const [open, setOpen] = React.useState(false);
   const [recordToView, setRecordToView] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
+  const [openPdfModal, setOpenPdfModal] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+
+  const handleGeneratePDF = () => {
+    try {
+      const pdfDoc = <SalesPDFGenerator data={data} />;
+
+      setPdfData(pdfDoc);
+      setOpenPdfModal(true);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   const handleOpen = (recordId) => {
     setOpen(true);
@@ -172,17 +187,17 @@ const ViewSales = (props) => {
     handleSearch(""); // Trigger search when selectedFilter or selectedStatus changes
   }, [selectedFilter]);
 
-  
   const handleSearch = (value) => {
     // Use originalData for searching
     const filteredData = originalData.filter((item) => {
-      const includesValue = Object.values(item).some((val) =>
-        val && val.toString().toLowerCase().includes(value.toLowerCase())
+      const includesValue = Object.values(item).some(
+        (val) =>
+          val && val.toString().toLowerCase().includes(value.toLowerCase())
       );
-  
+
       const filterCondition =
         selectedFilter && item.sales_plan === selectedFilter;
-  
+
       // Combine filter, stock_plan, status, and search conditions
       return (
         (includesValue && filterCondition) ||
@@ -191,10 +206,9 @@ const ViewSales = (props) => {
         (!selectedFilter && includesValue)
       );
     });
-  
+
     setData(filteredData);
   };
-  
 
   const handleDeleteSubmit = async () => {
     try {
@@ -276,7 +290,7 @@ const ViewSales = (props) => {
 
                 <Col xs={8} style={{ marginTop: "1.2rem" }}>
                   <ButtonGroup>
-                    <Button>Export To Pdf</Button>
+                    <Button onClick={() => handleGeneratePDF()}>Export To Pdf</Button>
                     <Button>Export To CSV</Button>
                     <Button>Export To Excel</Button>
                   </ButtonGroup>
@@ -575,6 +589,13 @@ const ViewSales = (props) => {
                 </Button>
               </Modal.Footer>
             </Modal>
+
+            <SalesPDFModal
+              openPdfModal={openPdfModal}
+              pdfData={pdfData}
+              onClose={() => setOpenPdfModal(false)}
+            />
+
             <ToastContainer
               position="bottom-left"
               autoClose={3000}
