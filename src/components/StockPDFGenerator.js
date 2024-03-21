@@ -38,7 +38,7 @@ const StockPDFGenerator = ({ data }) => {
           <Text style={styles.companyName}>Tooro Dairy</Text>
           <Text style={styles.companyAddress}>Fort-portal Tourism City</Text>
           <Text style={styles.companyAddress}>Plot No 97 Ruhandika Street</Text>
-          <Text style={styles.companyContact}>Email: info@toorodairy.com | Phone: +123456789</Text>
+          <Text style={styles.companyContact}>Email: info@toorodairy.com | Phone: +256 707584725</Text>
         </View>
         <View style={styles.header}>
           <Text style={styles.headerText}>
