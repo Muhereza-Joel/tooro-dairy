@@ -17,14 +17,38 @@ import SideNav from "./SideNav";
 import DashboardPanel from "./DashboardPanel";
 import TopBar from "./TopBar";
 import SalesGraph from "./SalesGraph";
+import Cookies from "js-cookie";
 
 const Dashboard = (props) => {
+  const [role, setRole] = useState(null);
   const [usersCount, setUsersCount] = useState(null);
   const [activeSubscriptions, setActiveSubscriptions] = useState(null);
   const [tatalBalances, setTotalBalances] = useState(null);
   const [revenueToday, setRevenueToday] = useState(null);
   const [revenueThisWeek, setRevenueThisWeek] = useState(null);
   const [revenueThisMonth, setRevenueThisMonth] = useState(null);
+
+  useEffect(() => {
+    const userCookie = Cookies.get("tdmis");
+
+    if (userCookie) {
+      try {
+        const userDataFromCookie = JSON.parse(userCookie);
+
+        setRole(userDataFromCookie.role);
+
+        if (typeof userDataFromCookie === "object") {
+        } else {
+          console.error("Invalid user data format in the cookie");
+        }
+      } catch (error) {
+        console.error("Error parsing JSON from the cookie:", error);
+      }
+    }
+  }, []);
+
+  const isAdmin = role === "administrator";
+  const isUser = role === "user";
 
   useEffect(() => {
     const fetchUsersCount = async (route) => {
@@ -104,6 +128,7 @@ const Dashboard = (props) => {
           <Content>
             <Grid fluid>
               <Row className="show-grid" style={{ padding: "15px 8px" }}>
+              {(isAdmin || isUser) && (
                 <Col xs={18} sm={18} md={18}>
                   <Row className="show-grid">
                     <Col xs={8} sm={8} md={8} style={{ marginBottom: 15 }}>
@@ -149,6 +174,8 @@ const Dashboard = (props) => {
                     </Col>
                   </Row>
                 </Col>
+
+              )}
                 <Col xs={6} sm={6} md={6} style={{ marginTop: 0 }}>
                   <Panel
                     shaded

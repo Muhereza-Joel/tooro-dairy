@@ -59,7 +59,7 @@ const SubscriptionDetails = ({ subscriptionPlan }) => {
             <p>Total Amount: {subscriptionPlan.total}</p>
             <p>Tax Amount: {subscriptionPlan.tax_amount}</p>
             <p>Discount Amount: {subscriptionPlan.discount_amount}</p>
-            <p>Remaining Days: {remainingDays}</p>
+            <p>Remaining Days: {remainingDays} days</p>
           </Col>
         </Row>
       </Grid>

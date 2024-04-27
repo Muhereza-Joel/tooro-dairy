@@ -31,6 +31,8 @@ const SideNav = (props) => {
 
   const isAdmin = role === "administrator";
   const isUser = role === "user";
+  const isCustomer = role === "customer";
+  const isSupplier = role === "supplier";
 
   return (
     <div style={{ width: 240 }}>
@@ -188,11 +190,98 @@ const SideNav = (props) => {
 
             )}
 
+            {(isCustomer || isSupplier) && (
+              <Nav.Menu
+              eventKey="6"
+              title="My Subscriptions"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="6-1"
+                onClick={() => {
+                  navigate("/dashboard/sales/my-subscriptions/");
+                }}
+              >
+                My Plan
+              </Nav.Item>
+              {/* <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item> */}
+
+              
+
+            </Nav.Menu>
+
+            )}
+
+            {(isCustomer || isSupplier) && (
+              <Nav.Menu
+              eventKey="7"
+              title="My Orders"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="7-1"
+                onClick={() => {
+                  navigate("/dashboard/sales/reports");
+                }}
+              >
+                Create New Order
+              </Nav.Item>
+              {/* <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item> */}
+
+              
+
+            </Nav.Menu>
+
+            )}
+
+            {(isCustomer || isSupplier) && (
+              <Nav.Menu
+              eventKey="8"
+              title="Payments"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="8-1"
+                onClick={() => {
+                  navigate("/dashboard/sales/reports");
+                }}
+              >
+                Make Payment
+              </Nav.Item>
+              {/* <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item> */}
+
+              
+
+            </Nav.Menu>
+
+            )}
+
           </Nav>
           <IconButton
-            icon={props.theme === "light" ? "Toggle Theme" : "Toggle Theme"}
-            appearance="primary"
-            style={{ position: "fixed", bottom: 30, left: 50 }} // Set text color explicitly
+            icon={props.theme === "light" ? "Switch To Dark Mode" : "Switch To Light Mode"}
+            appearance={props.theme === "light" ? "primary" : "ghost"}
+            style={{ position: "fixed", bottom: 30, left: 50 }} 
             onClick={props.onChangeTheme}
           />
         </Sidenav.Body>
