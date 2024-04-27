@@ -27,6 +27,8 @@ import StockReports from "./components/StockReports";
 import Subscriptions from "./components/Subscriptions";
 import CreateProfile from "./components/CreateProfile";
 import MySubscriptionPlan from "./components/MySubscriptionPlan";
+import Orders from "./components/Orders";
+import Payments from "./components/Payments";
 
 const PrivateRoute = ({ element, path }) => {
   return isAuthenticated() ? (
@@ -204,6 +206,26 @@ const App = () => {
                   <PrivateRoute
                     element={
                       <MySubscriptionPlan theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/dashboard/orders/my-orders/"
+                element={
+                  <PrivateRoute
+                    element={
+                      <Orders theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/dashboard/sales/payments/"
+                element={
+                  <PrivateRoute
+                    element={
+                      <Payments theme={theme} onChangeTheme={toggleTheme} />
                     }
                   />
                 }

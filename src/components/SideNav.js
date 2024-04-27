@@ -228,10 +228,10 @@ const SideNav = (props) => {
               <Nav.Item
                 eventKey="7-1"
                 onClick={() => {
-                  navigate("/dashboard/sales/reports");
+                  navigate("/dashboard/orders/my-orders/");
                 }}
               >
-                Create New Order
+                View Current Orders
               </Nav.Item>
               {/* <Nav.Item
                 eventKey="5-2"
@@ -257,10 +257,10 @@ const SideNav = (props) => {
               <Nav.Item
                 eventKey="8-1"
                 onClick={() => {
-                  navigate("/dashboard/sales/reports");
+                  navigate("/dashboard/sales/payments/");
                 }}
               >
-                Make Payment
+                My Payments
               </Nav.Item>
               {/* <Nav.Item
                 eventKey="5-2"

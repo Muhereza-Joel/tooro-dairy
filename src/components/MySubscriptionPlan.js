@@ -15,6 +15,7 @@ import {
   Button,
   ButtonToolbar,
   Panel,
+  Tag
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
@@ -229,13 +230,14 @@ const MySubscriptionPlan = (props) => {
                 </Tabs.Tab>
                 <Tabs.Tab eventKey="2" title="Create New Order">
                   <Panel bordered>
-                  <Message type="success">
+                  <Message type="warning">
                     <strong>Dear consumer:</strong>
                     <hr />
                     <h6>
                       The order you are about to create, is not from the subscription plan. This is a direct order that doesnot include a discount.
-                      
                     </h6>
+                    <Tag color="red"><strong>Please ensure to payout the order, in order for us to process it.</strong></Tag>
+                    
                   </Message>
                    <br/>
                     <div>
