@@ -10,7 +10,9 @@ import {
   Content,
   Placeholder,
   FlexboxGrid,
-  Message
+  Message,
+  Footer,
+  Pagination
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
@@ -25,6 +27,45 @@ const Orders = (props) => {
   const [role, setRole] = useState(null);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [userId, setUserId] = useState(null)
+  const userCookie = Cookies.get("tdmis");
+  const userDataFromCookie = JSON.parse(userCookie);
+
+  useEffect(() => {
+    if (userCookie) {
+      try {
+        const userDataFromCookie = JSON.parse(userCookie);
+
+        setRole(userDataFromCookie.role);
+        setUserId(userDataFromCookie.id);
+
+        if (typeof userDataFromCookie === "object") {
+        } else {
+          console.error("Invalid user data format in the cookie");
+        }
+      } catch (error) {
+        console.error("Error parsing JSON from the cookie:", error);
+      }
+    }
+  }, []);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3002/tdmis/api/v1/orders/my-orders?id=${userDataFromCookie.id}`
+        );
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -127,28 +168,47 @@ const Orders = (props) => {
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
-                      Username
+                      Product
                     </HeaderCell>
-                    <Cell dataKey="username" style={{ fontSize: "1.0rem" }} />
+                    <Cell dataKey="product_name" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
                   <Column width={200} resizable sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
-                      Email
+                      Quantity
                     </HeaderCell>
-                    <Cell dataKey="email" style={{ fontSize: "1.0rem" }} />
+                    <Cell dataKey="quantity" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
                   <Column width={200} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
-                      Role
+                      Unit Price
                     </HeaderCell>
-                    <Cell dataKey="role" style={{ fontSize: "1.0rem" }} />
+                    <Cell dataKey="unit_price" style={{ fontSize: "1.0rem" }} />
                   </Column>
+
+                  <Column width={200} sortable>
+                    <HeaderCell
+                      style={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                    >
+                      Total
+                    </HeaderCell>
+                    <Cell dataKey="total" style={{ fontSize: "1.0rem" }} />
+                  </Column>
+
+                  <Column width={200} sortable>
+                    <HeaderCell
+                      style={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                    >
+                      Status
+                    </HeaderCell>
+                    <Cell dataKey="status" style={{ fontSize: "1.0rem" }} />
+                  </Column>
+
                   <Column width={200} flexGrow={1}>
                     <HeaderCell
                       style={{ fontSize: "1.0rem", fontWeight: "bold" }}
@@ -161,20 +221,39 @@ const Orders = (props) => {
                       }
                     </Cell>
                   </Column>
-                  <Column width={200} flexGrow={1}>
-                    <HeaderCell
-                      style={{ fontSize: "1.0rem", fontWeight: "bold" }}
-                    >
-                      Last Updated
-                    </HeaderCell>
-                    <Cell style={{ fontSize: "1.0rem" }} dataKey="updated_at">
-                      {(rowData) => moment(rowData.updated_at).fromNow()}
-                    </Cell>
-                  </Column>
+                  
                 </Table>
               </div>
             )}
           </Content>
+          <Footer
+            style={{
+              height: "10vh",
+              position: "sticky",
+              bottom: 20,
+              zIndex: 1000,
+            }}
+          >
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="md"
+                layout={["total", "-", "limit", "|", "pager", "skip"]}
+                total={Math.ceil(data.length)} // Adjust total for pages
+                limitOptions={[10, 30, 50]}
+                limit={limit}
+                activePage={page}
+                onChangePage={setPage}
+                onChangeLimit={handleChangeLimit}
+              />
+            </div>
+          </Footer>
         </Container>
       </Container>
     </div>
