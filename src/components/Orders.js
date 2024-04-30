@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
 import {
   Container,
   Sidebar,
@@ -12,7 +13,10 @@ import {
   FlexboxGrid,
   Message,
   Footer,
-  Pagination
+  Pagination,
+  Button,
+  Modal,
+  Loader,
 } from "rsuite";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
@@ -20,14 +24,18 @@ import moment from "moment";
 const { Column, HeaderCell, Cell } = Table;
 
 const Orders = (props) => {
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [email, setEmail] = useState(null);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [userId, setUserId] = useState(null)
+  const [userId, setUserId] = useState(null);
   const userCookie = Cookies.get("tdmis");
   const userDataFromCookie = JSON.parse(userCookie);
 
@@ -38,6 +46,8 @@ const Orders = (props) => {
 
         setRole(userDataFromCookie.role);
         setUserId(userDataFromCookie.id);
+        setUsername(userDataFromCookie.username);
+        setEmail(userDataFromCookie.email)
 
         if (typeof userDataFromCookie === "object") {
         } else {
@@ -48,7 +58,6 @@ const Orders = (props) => {
       }
     }
   }, []);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +74,6 @@ const Orders = (props) => {
 
     fetchData();
   }, []);
-
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -104,6 +112,125 @@ const Orders = (props) => {
     setLimit(dataKey);
   };
 
+  const initiatePayement = async (orderId, amount) => {
+    try {
+      setShowModal(true);
+      const authResponse = await fetch(
+        "https://pay.pesapal.com/v3/api/Auth/RequestToken",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            consumer_key: "FtbOMHLJajpDeghNZks6g0uLi8GjGcBf",
+            consumer_secret: "7nTLRqzlVZSkagTDvi7jChURQaU=",
+          }),
+        }
+      );
+
+      if (authResponse.ok) {
+        const authResponseData = await authResponse.json();
+
+        Cookies.set(
+          "tdmis-pesapal",
+          JSON.stringify({
+            authToken: authResponseData.token,
+          })
+        );
+
+        const ipnRegistrationResponse = await fetch(
+          "https://pay.pesapal.com/v3/api/URLSetup/RegisterIPN",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${authResponseData.token}`,
+            },
+            body: JSON.stringify({
+              url: "http://localhost:3000/dashboard/sales/orders/payments/complete/",
+              ipn_notification_type: "GET",
+            }),
+          }
+        );
+
+        if (ipnRegistrationResponse.ok) {
+          const ipnData = await ipnRegistrationResponse.json();
+
+          const orderRequest = await fetch(
+            "https://pay.pesapal.com/v3/api/Transactions/SubmitOrderRequest",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${authResponseData.token}`,
+              },
+              body: JSON.stringify({
+                id: orderId,
+                currency: "UGX",
+                amount: 500,
+                description: "Tooro Dairy Order Payment",
+                callback_url:
+                  "http://localhost:3000/dashboard/sales/orders/payments/complete/",
+                notification_id: ipnData.ipn_id,
+                billing_address: {
+                  email_address: email,
+                  phone_number: "",
+                  country_code: "256",
+                  first_name: username,
+                  middle_name: "",
+                  last_name: "",
+                  line_1: "",
+                  line_2: "",
+                  city: "",
+                  state: "",
+                  postal_code: null,
+                  zip_code: null,
+                },
+              }),
+            }
+          );
+
+          if (orderRequest.ok) {
+            const requestData = await orderRequest.json();
+            const transactionResponse = await fetch(
+              "http://localhost:3002/tdmis/api/v1/payments/add",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  currency: "UGX",
+                  amount: amount,
+                  tracking_id: requestData.order_tracking_id,
+                  order_id: orderId,
+                }),
+              }
+            );
+
+            if (transactionResponse.ok) {
+              const transactionData = await transactionResponse.json();
+              if (transactionData) {
+                navigate(
+                  `/dashboard/sales/orders/makepayment?orderId=${orderId}&url=${requestData.redirect_url}`
+                );
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to connect to the server...", {
+        style: { backgroundColor: "#fcd0d0", color: "#333" },
+      });
+    }
+  };
+
   return (
     <div>
       <Container>
@@ -134,7 +261,10 @@ const Orders = (props) => {
                 </FlexboxGrid.Item>
               </FlexboxGrid>
               <Message type="warning">
-                <h6><strong>Warning!</strong> Please Note that only (40) recent orders your recently placed are shown here.</h6>
+                <h6>
+                  <strong>Warning!</strong> Please Note that only (40) recent
+                  orders your recently placed are shown here.
+                </h6>
               </Message>
               <br />
             </div>
@@ -170,10 +300,13 @@ const Orders = (props) => {
                     >
                       Product
                     </HeaderCell>
-                    <Cell dataKey="product_name" style={{ fontSize: "1.0rem" }} />
+                    <Cell
+                      dataKey="product_name"
+                      style={{ fontSize: "1.0rem" }}
+                    />
                   </Column>
 
-                  <Column width={200} resizable sortable>
+                  <Column width={120} resizable sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
@@ -182,7 +315,7 @@ const Orders = (props) => {
                     <Cell dataKey="quantity" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
-                  <Column width={200} sortable>
+                  <Column width={120} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
@@ -191,7 +324,7 @@ const Orders = (props) => {
                     <Cell dataKey="unit_price" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
-                  <Column width={200} sortable>
+                  <Column width={120} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
@@ -200,7 +333,7 @@ const Orders = (props) => {
                     <Cell dataKey="total" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
-                  <Column width={200} sortable>
+                  <Column width={120} sortable>
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
@@ -209,7 +342,7 @@ const Orders = (props) => {
                     <Cell dataKey="status" style={{ fontSize: "1.0rem" }} />
                   </Column>
 
-                  <Column width={200} flexGrow={1}>
+                  <Column width={150} flexGrow={1}>
                     <HeaderCell
                       style={{ fontSize: "1.0rem", fontWeight: "bold" }}
                     >
@@ -221,8 +354,42 @@ const Orders = (props) => {
                       }
                     </Cell>
                   </Column>
-                  
+                  <Column width={150} fixed="right">
+                    <HeaderCell
+                      style={{ fontSize: "1.0rem", fontWeight: "bold" }}
+                    >
+                      Action
+                    </HeaderCell>
+                    <Cell>
+                      {(rowData, rowIndex) => {
+                        const orderId = rowData.id;
+                        const amount = rowData.total;
+
+                        return (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Button
+                              style={{ cursor: "pointer", marginBottom: "2px" }}
+                              appearance="primary"
+                              onClick={() => {
+                                initiatePayement(orderId, amount);
+                              }}
+                            >
+                              Pay Out Order
+                            </Button>
+                          </div>
+                        );
+                      }}
+                    </Cell>
+                  </Column>
                 </Table>
+                <Modal open={showModal}>
+                  <Modal.Body><Loader size="sm"/> Initializing please wait...</Modal.Body>
+                </Modal>
               </div>
             )}
           </Content>

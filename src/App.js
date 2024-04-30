@@ -29,6 +29,8 @@ import CreateProfile from "./components/CreateProfile";
 import MySubscriptionPlan from "./components/MySubscriptionPlan";
 import Orders from "./components/Orders";
 import Payments from "./components/Payments";
+import MakePayment from "./components/MakePayment";
+import Thankyou from "./components/Thankyou";
 
 const PrivateRoute = ({ element, path }) => {
   return isAuthenticated() ? (
@@ -216,6 +218,26 @@ const App = () => {
                   <PrivateRoute
                     element={
                       <Orders theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/dashboard/sales/orders/makepayment"
+                element={
+                  <PrivateRoute
+                    element={
+                      <MakePayment theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="dashboard/sales/orders/payments/complete/"
+                element={
+                  <PrivateRoute
+                    element={
+                      <Thankyou theme={theme} onChangeTheme={toggleTheme} />
                     }
                   />
                 }
