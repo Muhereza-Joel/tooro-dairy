@@ -171,7 +171,7 @@ const Orders = (props) => {
               body: JSON.stringify({
                 id: orderId,
                 currency: "UGX",
-                amount: 500,
+                amount: amount,
                 description: "Tooro Dairy Order Payment",
                 callback_url:
                   "http://localhost:3000/dashboard/sales/orders/payments/complete/",
@@ -364,6 +364,7 @@ const Orders = (props) => {
                       {(rowData, rowIndex) => {
                         const orderId = rowData.id;
                         const amount = rowData.total;
+                        const status = rowData.status;
 
                         return (
                           <div
@@ -372,6 +373,7 @@ const Orders = (props) => {
                               justifyContent: "center",
                             }}
                           >
+                            {status !== 'paid' && (
                             <Button
                               style={{ cursor: "pointer", marginBottom: "2px" }}
                               appearance="primary"
@@ -381,6 +383,7 @@ const Orders = (props) => {
                             >
                               Pay Out Order
                             </Button>
+                            )}
                           </div>
                         );
                       }}

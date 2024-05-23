@@ -18,25 +18,51 @@ const Thankyou = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `https://pay.pesapal.com/v3/api/Transactions/GetTransactionStatus?orderTrackingId=${OrderTrackingId}`,{
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    Authorization: `Bearer ${userDataFromCookie.authToken}`,
-                  },
-            }
-          );
-          const data = await response.json();
-          setData(data);
-        } catch (error) {
-          console.error("Error transaction status:", error);
-        }
-      };
+      try {
+        const response = await fetch(
+          `https://pay.pesapal.com/v3/api/Transactions/GetTransactionStatus?orderTrackingId=${OrderTrackingId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${userDataFromCookie.authToken}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setData(data);
   
-      fetchData();
-  }, [])
+        // Assuming the necessary values are in the response data
+        const updatePayload = {
+          status: "COMPLETED",
+          tracking_id: data.tracking_id,
+          payment_method: data.payment_method,
+          order_id: data.merchant_reference, 
+        };
+  
+        const updateResponse = await fetch(
+          `http://localhost:3002/tdmis/api/v1/payments/update`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatePayload),
+          }
+        );
+  
+        if (!updateResponse.ok) {
+          throw new Error("Failed to update payment");
+        }
+  
+      } catch (error) {
+        console.error("Error transaction status or updating payment:", error);
+      }
+    };
+  
+    fetchData();
+  }, []); // Add dependencies to ensure effect runs only when these values change
+  
 
   return (
     <div>
@@ -89,6 +115,17 @@ const Thankyou = (props) => {
           </Content>
         </Container>
       </Container>
+      <ToastContainer
+                position="bottom-left"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
     </div>
   );
 };
