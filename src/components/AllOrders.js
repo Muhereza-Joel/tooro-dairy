@@ -176,6 +176,30 @@ const AllOrders = (props) => {
                     <HeaderCell
                       style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                     >
+                      Fullname
+                    </HeaderCell>
+                    <Cell
+                      dataKey="fullname"
+                      style={{ fontSize: "1.0rem" }}
+                    />
+                  </Column>
+
+                  <Column width={120} sortable>
+                    <HeaderCell
+                      style={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                    >
+                      Contact
+                    </HeaderCell>
+                    <Cell
+                      dataKey="phone_number"
+                      style={{ fontSize: "1.0rem" }}
+                    />
+                  </Column>
+
+                  <Column width={100} sortable>
+                    <HeaderCell
+                      style={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                    >
                       Product
                     </HeaderCell>
                     <Cell

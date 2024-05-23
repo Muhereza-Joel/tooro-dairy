@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Form, Schema, Button } from "rsuite";
 
+import logo from "../assets/images/logo.png";
+
 const nameRule = Schema.Types.StringType().isRequired(
   "The username is required."
 );
@@ -92,6 +94,7 @@ const Register = () => {
         height: "100vh",
       }}
     >
+      <img src={logo} height="120" style={{ objectFit: "cover" }} />
       <h3>Tooro Dairy Mangement System</h3>
       <br />
       <br />

@@ -171,7 +171,7 @@ const Orders = (props) => {
               body: JSON.stringify({
                 id: orderId,
                 currency: "UGX",
-                amount: amount,
+                amount: 500,
                 description: "Tooro Dairy Order Payment",
                 callback_url:
                   "http://localhost:3000/dashboard/sales/orders/payments/complete/",

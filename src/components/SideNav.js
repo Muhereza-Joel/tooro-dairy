@@ -36,7 +36,7 @@ const SideNav = (props) => {
 
   return (
     <div style={{ width: 240 }}>
-      <Sidenav defaultOpenKeys={["3", "4"]}>
+      <Sidenav defaultOpenKeys={["3", "4", "8"]}>
         <Sidenav.Body
           style={{ height: "100vh", position: "sticky", top: 0, left: 0 }}
         >
@@ -190,7 +190,7 @@ const SideNav = (props) => {
 
             )}
 
-            {(isCustomer || isSupplier) && (
+            {(isCustomer) && (
               <Nav.Menu
               eventKey="6"
               title="My Subscriptions"
@@ -247,7 +247,8 @@ const SideNav = (props) => {
             </Nav.Menu>
 
             )}
-            {(isCustomer || isSupplier) && (
+
+            {(isCustomer) && (
               <Nav.Menu
               eventKey="7"
               title="My Orders"
@@ -260,6 +261,35 @@ const SideNav = (props) => {
                 }}
               >
                 View Current Orders
+              </Nav.Item>
+              {/* <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item> */}
+
+              
+
+            </Nav.Menu>
+
+            )}
+            
+            {(isSupplier) && (
+              <Nav.Menu
+              eventKey="8"
+              title="My Supplies"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="7-1"
+                onClick={() => {
+                  navigate("/dashboard/orders/my-supplies/");
+                }}
+              >
+                My Supplies
               </Nav.Item>
               {/* <Nav.Item
                 eventKey="5-2"

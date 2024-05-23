@@ -38,7 +38,7 @@ const selectPickerData = ["daily", "weekly", "monthly"].map((item) => ({
 
 const { Column, HeaderCell, Cell } = Table;
 
-const ViewCollections = (props) => {
+const MyCollections = (props) => {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
@@ -61,6 +61,9 @@ const ViewCollections = (props) => {
   const [collectionToView, setCollectionToView] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const userCookie = Cookies.get("tdmis");
+  const userDataFromCookie = JSON.parse(userCookie);
 
   const [pdfData, setPdfData] = useState(null);
 
@@ -90,7 +93,7 @@ const ViewCollections = (props) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3002/tdmis/api/v1/stock/collections"
+          `http://localhost:3002/tdmis/api/v1/stock/collections/user/${userDataFromCookie.id}`
         );
         const collections = await response.json();
         setOriginalData(collections); // Store original data
@@ -430,7 +433,7 @@ const ViewCollections = (props) => {
                     </HeaderCell>
                     <Cell
                       dataKey="buying_price"
-                      style={{ fontSize: "1.1rem" }}
+                      style={{ fontSize: "1.0rem" }}
                     />
                   </Column>
                   <Column width={120} sortable>
@@ -714,4 +717,4 @@ const ViewCollections = (props) => {
   );
 };
 
-export default ViewCollections;
+export default MyCollections;
