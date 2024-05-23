@@ -172,7 +172,7 @@ const CreateProfile = (props) => {
                 <Col xs={22} style={{ textAlign: "center", marginBottom: 30 }}>
                   <Message type="warning" bordered showIcon>
                     <h3>Finish Setting Up Your Account</h3>
-                    By providing brief information about your. No part of this
+                    By providing brief information about you. No part of this
                     data will be share without your consent..
                   </Message>
                 </Col>

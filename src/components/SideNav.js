@@ -219,6 +219,34 @@ const SideNav = (props) => {
 
             )}
 
+            {(isAdmin || isUser) && (
+              <Nav.Menu
+              eventKey="7"
+              title="Orders"
+              icon={<MagicIcon />}
+            >
+              <Nav.Item
+                eventKey="7-1"
+                onClick={() => {
+                  navigate("/dashboard/orders/all/");
+                }}
+              >
+                View Current Orders
+              </Nav.Item>
+              {/* <Nav.Item
+                eventKey="5-2"
+                onClick={() => {
+                  navigate("/dashboard/stock/reports");
+                }}
+              >
+                Stock Reports
+              </Nav.Item> */}
+
+              
+
+            </Nav.Menu>
+
+            )}
             {(isCustomer || isSupplier) && (
               <Nav.Menu
               eventKey="7"
@@ -248,35 +276,7 @@ const SideNav = (props) => {
 
             )}
 
-            {(isCustomer || isSupplier) && (
-              <Nav.Menu
-              eventKey="8"
-              title="Payments"
-              icon={<MagicIcon />}
-            >
-              <Nav.Item
-                eventKey="8-1"
-                onClick={() => {
-                  navigate("/dashboard/sales/payments/");
-                }}
-              >
-                My Payments
-              </Nav.Item>
-              {/* <Nav.Item
-                eventKey="5-2"
-                onClick={() => {
-                  navigate("/dashboard/stock/reports");
-                }}
-              >
-                Stock Reports
-              </Nav.Item> */}
-
-              
-
-            </Nav.Menu>
-
-            )}
-
+           
           </Nav>
           <IconButton
             icon={props.theme === "light" ? "Switch To Dark Mode" : "Switch To Light Mode"}

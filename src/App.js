@@ -31,6 +31,7 @@ import Orders from "./components/Orders";
 import Payments from "./components/Payments";
 import MakePayment from "./components/MakePayment";
 import Thankyou from "./components/Thankyou";
+import AllOrders from "./components/AllOrders";
 
 const PrivateRoute = ({ element, path }) => {
   return isAuthenticated() ? (
@@ -218,6 +219,16 @@ const App = () => {
                   <PrivateRoute
                     element={
                       <Orders theme={theme} onChangeTheme={toggleTheme} />
+                    }
+                  />
+                }
+              />
+              <Route
+                path="/dashboard/orders/all/"
+                element={
+                  <PrivateRoute
+                    element={
+                      <AllOrders theme={theme} onChangeTheme={toggleTheme} />
                     }
                   />
                 }

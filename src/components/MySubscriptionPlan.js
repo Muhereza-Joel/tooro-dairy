@@ -141,7 +141,7 @@ const MySubscriptionPlan = (props) => {
 
       const requestBody = {
         ...formData,
-        salesPlan: subscriptionPlan.sales_plan,
+        salesPlan: 'daily' || subscriptionPlan.sales_plan ,
         userId: userId,
         productId: productId,
         unitPrice: selectedProduct.selling_price,
