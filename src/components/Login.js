@@ -5,12 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isAuthenticated, login } from "../auth";
 
-import cow from "../assets/images/cow.jpg";
-import yourghut from "../assets/images/yorghut.jpg";
-import milke from "../assets/images/milke.jpg";
-import yourghut1 from "../assets/images/yourghut.jpg";
-import logo from "../assets/images/logo.png";
-
 const emailRule = Schema.Types.StringType()
   .isEmail("Please enter a valid email address.")
   .isRequired("Email or Username is required");
@@ -72,7 +66,7 @@ const Login = () => {
         height: "100vh",
       }}
     >
-      <img src={logo} height="120" style={{ objectFit: "cover" }} />
+      <img src="http://localhost:3002/dist/images/logo.png" height="120" style={{ objectFit: "cover" }} />
       <h3>Tooro Dairy Mangement System</h3>
       <br />
       <br />
@@ -80,10 +74,10 @@ const Login = () => {
         <FlexboxGrid justify="center">
           <FlexboxGrid.Item colspan={6}>
             <Carousel autoplay className="custom-slider">
-              <img src={cow} height="250" style={{ objectFit: "cover" }} />
-              <img src={yourghut} height="250" />
-              <img src={milke} height="250" />
-              <img src={yourghut1} height="250" />
+              <img src="http://localhost:3002/dist/images/cow.jpg" height="250" style={{ objectFit: "cover" }} />
+              <img src="http://localhost:3002/dist/images/yorghut.jpg" height="250" />
+              <img src="http://localhost:3002/dist/images/milke.jpg" height="250" />
+              <img src="http://localhost:3002/dist/images/yourghut.jpg" height="250" />
             </Carousel>
           </FlexboxGrid.Item>
           <FlexboxGrid.Item colspan={6}>
